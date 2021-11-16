@@ -144,12 +144,12 @@ def xor(input1: str, input2: str):
     return s
 
 
-def sBox(input_bits: str, s_box_num: int):
+def s_box(input_bits: str, s_box_num: int):
     i: int = int(input_bits[0] + input_bits[-1], 2)
     j: int = int(input_bits[1:-1], 2)
-    s_box = globals()['S' + str(s_box_num)]
+    s_box_array = globals()['S' + str(s_box_num)]
 
-    out = bin(s_box[i][j])[2:].zfill(4)
+    out = bin(s_box_array[i][j])[2:].zfill(4)
     return out
 
 
@@ -159,7 +159,7 @@ def f(input_string: str, input_key: str):
     B = [input_string[i:i + 6] for i in range(0, len(input_string), 6)]
     F = ''
     for i in range(len(B)):
-        F += sBox(B[i], i + 1)
+        F += s_box(B[i], i + 1)
     F = apply_transformation(F, P)
 
     return F
@@ -199,6 +199,6 @@ def encrypt_file(file_path: str, key: str, is_encryption: bool = True) -> str:
 
 
 if __name__ == '__main__':
-    path = '/Users/aishwarya/Documents/PycharmProjects/DES_Crypto/testFiles/test1.txt'
+    path = '/Users/aishwarya/cryptography_software_tool/testFiles/test1.txt'
     key = '133457799BBCDFF1'
     print(encrypt_file(path, key, True))
