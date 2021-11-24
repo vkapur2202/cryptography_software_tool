@@ -12,7 +12,5 @@ def md5():
     f = request.files['file']
     return md5sum(f.read())
     
-
-
 if __name__ == '__main__':
    app.run(debug = True)
