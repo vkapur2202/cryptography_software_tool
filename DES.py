@@ -1,4 +1,6 @@
 from typing import List
+from bitarray import bitarray
+from bitarray.util import ba2int
 
 IP = [[58, 50, 42, 34, 26, 18, 10, 2],
       [60, 52, 44, 36, 28, 20, 12, 4],
@@ -93,38 +95,36 @@ S8 = [[13, 2, 8, 4, 6, 15, 11, 1, 10, 9, 3, 14, 5, 0, 12, 7],
       [2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11]]
 
 
-def file_to_bits(file_path: str) -> str:
-    with open(file_path, 'rb') as f:
-        content = f.read()
+def file_to_bits(file_path: str) -> bitarray:
+    fl = open(file_path, 'rb')
+    bit_array = bitarray(endian="big")
+    bit_array.fromfile(fl)
 
-    byte_array = bytearray(content)
-    binary_representation = ''
-    for i in range(len(byte_array)):
-        binary_representation += (bin(byte_array[i])[2:]).zfill(8)
-
-    print(len(binary_representation))
-    binary_representation = ' '.join(binary_representation[i:i + 64] for i in range(0, len(binary_representation), 64))
-    return binary_representation
+    file_bitarray = bit_array.copy()
+    return file_bitarray
 
 
-def apply_transformation(input_string: str, transform):
-    out = ''
+def apply_transformation(input_string: bitarray, transform):
+    out: bitarray = bitarray()
     for i in range(len(transform)):
         for j in range(len(transform[i])):
-            out += input_string[transform[i][j] - 1]
+            out.append(input_string[transform[i][j] - 1])
 
     return out
 
 
-def left_shift(input_string: str, num_shifts: int):
+def left_shift(input_string: bitarray, num_shifts: int):
     return input_string[num_shifts:] + input_string[0:num_shifts]
 
 
-def generate_keys(key: str):
-    binary_key = bin(int(key, 16))[2:].zfill(64)
+def generate_keys(input_key: str):
+    if len(input_key) != 16:
+        raise ValueError("Key should be a 16 hexadecimal digit input")
+
+    binary_key = bitarray(bin(int(input_key, 16))[2:].zfill(64))
     k_plus = apply_transformation(binary_key, PC1)
 
-    keys: List[str] = [''] * 16
+    keys: List[bitarray] = [bitarray()] * 16
     mid_index = int(len(k_plus) / 2)
     C: list = [k_plus[0:mid_index], ]
     D: list = [k_plus[mid_index:], ]
@@ -136,45 +136,41 @@ def generate_keys(key: str):
     return keys
 
 
-def xor(input1: str, input2: str):
-    s = [(int(a != b)) for (a, b) in zip(input1, input2)]
-    str_s = [str(i) for i in s]
-    s = ''.join(str_s)
+def s_box(input_bits: bitarray, s_box_num: int):
+    i = ba2int(input_bits[0::5])
+    j = ba2int(input_bits[1:5])
+    s_box_table = globals()['S' + str(s_box_num)]
 
-    return s
-
-
-def s_box(input_bits: str, s_box_num: int):
-    i: int = int(input_bits[0] + input_bits[-1], 2)
-    j: int = int(input_bits[1:-1], 2)
-    s_box_array = globals()['S' + str(s_box_num)]
-
-    out = bin(s_box_array[i][j])[2:].zfill(4)
+    out = bitarray(bin(s_box_table[i][j])[2:].zfill(4))
     return out
 
 
-def f(input_string: str, input_key: str):
+def f(input_string: bitarray, input_key: bitarray):
     input_string = apply_transformation(input_string, E)
-    input_string = xor(input_key, input_string)
+    input_string = input_key ^ input_string
     B = [input_string[i:i + 6] for i in range(0, len(input_string), 6)]
-    F = ''
+    F = bitarray()
     for i in range(len(B)):
-        F += s_box(B[i], i + 1)
+        F += (s_box(B[i], i + 1))
     F = apply_transformation(F, P)
 
     return F
 
 
-def encrypt(input_binary_file: str, key: str, is_encryption: bool):
-    keys = generate_keys(key)
+def encrypt(input_binary_file: bitarray, input_key: str, is_encryption: bool):
+    keys = generate_keys(input_key)
     print('DES Cryptography Tool: Keys Generated')
     if not is_encryption:
         keys.reverse()
-        if len(input_binary_file) >= 64 & input_binary_file[64] != ' ':
-            input_binary_file = ' '.join(input_binary_file[i:i + 64] for i in range(0, len(input_binary_file), 64))
 
-    blocks: List[str] = input_binary_file.split(' ')
-    output = ''
+    blocks: List[bitarray] = []
+    for i in range(int(len(input_binary_file) / 64)):
+        blocks.append(input_binary_file[64 * i:64 * (i + 1)])
+
+    # blocks = [bitarray('0000000100100011010001010110011110001001101010111100110111101111')]  # for testing
+    # blocks = [bitarray('1000010111101000000100110101010000001111000010101011010000000101')]  # for testing
+
+    output = bitarray()
     for m in blocks:
         messageIP = apply_transformation(m, IP)
         size = int(len(messageIP) / 2)
@@ -183,22 +179,27 @@ def encrypt(input_binary_file: str, key: str, is_encryption: bool):
 
         for i in range(1, 17):
             L.append(R[i - 1])
-            R.append(xor(L[i - 1], f(R[i - 1], keys[i - 1])))
+            R.append(L[i - 1] ^ f(R[i - 1], keys[i - 1]))
 
         output += apply_transformation(R[16] + L[16], IP_Inv)
-        print('Original Message: ' + input_binary_file)
-        print('Cipher Message: ' + output)
+
+    print('Original Message: ')
+    print(input_binary_file)
+    print('Cipher Message: ')
+    print(output)
+
     return output
 
 
-def encrypt_file(file_path: str, key: str, is_encryption: bool = True) -> str:
+def encrypt_file(file_path: str, input_key: str, is_encryption: bool = True) -> bitarray:
     input_binary_file = file_to_bits(file_path)
     print('DES Cryptography Tool: File Initialized')
 
-    return encrypt(input_binary_file, key, is_encryption)
+    return encrypt(input_binary_file, input_key, is_encryption)
 
 
 if __name__ == '__main__':
-    path = '/Users/aishwarya/cryptography_software_tool/testFiles/test1.txt'
+    path = '/Users/aishwarya/Documents/PycharmProjects/DES_Crypto/testFiles/test1.txt'
     key = '133457799BBCDFF1'
-    print(encrypt_file(path, key, True))
+    cipher = encrypt_file(path, key, True)
+    decipher = encrypt(cipher, key, False)
