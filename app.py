@@ -9,7 +9,7 @@ def index():
 
 @app.route('/md5', methods=['POST'])
 def md5():
-    f = request.files['file']
+    f = request.files['md5file']
     return md5sum(f.read())
     
 if __name__ == '__main__':
