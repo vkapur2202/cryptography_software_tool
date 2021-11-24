@@ -134,12 +134,12 @@
   <p>The message digest algorithm 5 uses hash algorithm which creates a 128 bit value from any input. Its output is always a fixed length. Encrypting text, images, and videos is also supported and widely used by md5.</p>
   <br>
   <p>Submit the required file.</p>
-  <form action="/md5">
-    <input type="file" id="myFile" name="filename">
+  <form action="/md5" method="POST" enctype="multipart/form-data">
+    <input type="file" id="myFile" name="md5file">
     <input type="submit">
   </form>
   <br><br>
-  <a class="et_pb_button" title="encrypt" href="#">ENCRYPT</a><a class="et_pb_button" title="decrypt" href="#">DECRYPT</a>
+  <a class="et_pb_button" title="encrypt" href="#">ENCRYPT</a>
 </div>
 
 

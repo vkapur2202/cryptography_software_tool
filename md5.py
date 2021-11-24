@@ -81,16 +81,3 @@ def md5sum(msg):
         d0 = (d0 + D) % (2**32)
 
     return fmt8(a0)+fmt8(b0)+fmt8(c0)+fmt8(d0)
-
-if __name__ == "__main__":
-    if len(sys.argv) <= 1:
-        print("Please input filename.")
-    else:
-        fname = sys.argv[1]
-        if not os.path.exists(fname):
-            print("File does not exist.")
-            exit()
-        to_hash = open(fname,"rb")
-        data = to_hash.read()
-        print(md5sum(data))
-        to_hash.close()
