@@ -1,0 +1,132 @@
+body {
+    font: 400 15px/1.8 Lato, sans-serif;
+    color: rgb(110, 110, 110);
+}
+
+.container {
+    padding: 82px 122px;
+}
+
+h4 {
+    margin: 11px 0 29px 0;
+    letter-spacing: 10px;      
+    font-size: 20px;
+    color: #111;
+}
+
+h3 {
+    margin: 11px 0 29px 0;
+    letter-spacing: 10px;      
+    font-size: 20px;
+    color: #111;
+}
+
+.carousel-inner img {
+    width: 100%;
+    margin: auto;
+}
+
+.carousel-caption {
+    top: 250px;
+    bottom: auto;
+}
+
+.carousel-caption p {
+    color: #fff;
+    text-size-adjust: 2em;
+}
+
+.carousel-caption span {
+    background-color: #fff;
+    border-radius: 20%;
+    color: black;
+    size: 2em;
+}
+
+.et_pb_button {
+    display: inline-block;
+    margin: 40px;
+    color:white;
+    background: rgb(110, 110, 110);
+    border-radius: 45px;
+    padding: 7px 17px;
+    font-family: 'Lato';
+}
+
+.nav-tabs li a {
+    color: rgb(110, 110, 110);
+}
+
+.navbar {
+    font-family: Montserrat, sans-serif;
+    opacity: 0.8;
+    margin-bottom: 0;
+    background-color: #28282b;
+    letter-spacing: 3px;
+    font-size: 12px !important;
+    border: 0;
+}
+
+.navbar .navbar-brand { 
+    color: #d5d5d5 !important;
+}
+
+.navbar li a { 
+    color: #d5d5d5 !important;
+}
+
+.navbar-nav li a:hover {
+    color: #fff !important;
+}
+
+.navbar-nav li.active a {
+    background-color: #29292c !important;
+    color: #fff !important;
+}
+
+.navbar-default .navbar-toggle {
+    border-color: transparent;
+}
+
+.open .dropdown-toggle {
+    background-color: #555 !important;
+    color: #fff;
+}
+
+.dropdown-menu li a {
+    color: #000 !important;
+}
+
+.back p {
+    font-style: italic;
+}
+
+.back {
+    padding: 80px 120px;
+    background: #28282b;
+    color: #bdbdbd;
+}
+
+.back h3 {
+    color: #fff;
+}
+
+footer {
+    background-color: #28282b;
+    color: #f5f5f5;
+    padding: 29px;
+}
+
+footer a:hover {
+    color: rgb(110, 110, 110);
+} 
+
+footer a {
+    color: #f5f5f5;
+} 
+
+#myFile {
+    text-align: center;
+    margin: auto;
+    padding: 1%;
+}

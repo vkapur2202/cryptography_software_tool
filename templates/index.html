@@ -10,137 +10,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <style>
-
-  body {
-    font: 400 15px/1.8 Lato, sans-serif;
-    color: rgb(110, 110, 110);
-  }
-
-  .container {
-    padding: 82px 122px;
-  }
-  
-  h4 {
-    margin: 11px 0 29px 0;
-    letter-spacing: 10px;      
-    font-size: 20px;
-    color: #111;
-  }
-
-  h3 {
-    margin: 11px 0 29px 0;
-    letter-spacing: 10px;      
-    font-size: 20px;
-    color: #111;
-  }
-  
-  .carousel-inner img {
-    width: 100%;
-    margin: auto;
-  }
-
-  .carousel-caption {
-    top: 250px;
-    bottom: auto;
-  }
-
-  .carousel-caption p {
-    color: #fff;
-    text-size-adjust: 2em;
-  }
-
-  .carousel-caption span {
-    background-color: #fff;
-    border-radius: 20%;
-    color: black;
-    size: 2em;
-  }
-
-  .et_pb_button {
-    display: inline-block;
-    margin: 40px;
-    color:white;
-    background: rgb(110, 110, 110);
-    border-radius: 45px;
-    padding: 7px 17px;
-    font-family: 'Lato';
-  }
-
-  .nav-tabs li a {
-    color: rgb(110, 110, 110);
-  }
-
-  .navbar {
-    font-family: Montserrat, sans-serif;
-    opacity: 0.8;
-    margin-bottom: 0;
-    background-color: #28282b;
-    letter-spacing: 3px;
-    font-size: 12px !important;
-    border: 0;
-  }
-
-  .navbar .navbar-brand { 
-    color: #d5d5d5 !important;
-  }
-
-  .navbar li a { 
-    color: #d5d5d5 !important;
-  }
-
-  .navbar-nav li a:hover {
-    color: #fff !important;
-  }
-
-  .navbar-nav li.active a {
-    background-color: #29292c !important;
-    color: #fff !important;
-    
-  }
-
-  .navbar-default .navbar-toggle {
-    border-color: transparent;
-  }
-
-  .open .dropdown-toggle {
-    background-color: #555 !important;
-    color: #fff;
-  }
-
-  .dropdown-menu li a {
-    color: #000 !important;
-  }
-
-  .back p {
-    font-style: italic;
-  }
-
-  .back {
-    padding: 80px 120px;
-    background: #28282b;
-    color: #bdbdbd;
-  }
-  
-  .back h3 {
-    color: #fff;
-  }
- 
-  footer {
-    background-color: #28282b;
-    color: #f5f5f5;
-    padding: 29px;
-  }
-
-  footer a:hover {
-    color: rgb(110, 110, 110);
-  } 
-
-  footer a {
-    color: #f5f5f5;
-  } 
-
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
 </head>
 <body id="crypto" data-target=".navbar" data-spy="scroll" data-offset="50">
 
@@ -185,7 +55,7 @@
 
     <div class="carousel-inner" role="listbox">
       <div class="item active">
-        <img src="images/cara2.jpg" width="1200" height="600">
+        <img src="/static/images/cara2.jpg" width="1200" height="600">
         <div class="carousel-caption">
           <p>Cryptography is the study of communications that are secured. A cipher (cryptographic algorithm) is used for encryption and decryption and is a mathematical set of operation. A cryptographic algorithm usually consists of a plain text and a key.</p>
           <p>Encryption essentially is used to turn online private text into "your eyes only" text. Ensuring that your personal information is encrypted while being over through the internet is crucial.</p>
@@ -193,7 +63,7 @@
       </div>
 
       <div class="item">
-        <img src="images/cara3.jpg" width="1200" height="600">
+        <img src="/static/images/cara3.jpg" width="1200" height="600">
         <div class="carousel-caption">
           <span>Securing communication and transfers over the web prevents tampering and misuse of that information. Hence, cryptography plays an important role in our day to day web transactions. When layers of cryptograhic algorithms are applied to sensitive data, it becomes impossible for someone to read it and modify it. Cryptographic keys, digital certificates, and cryptographic libraries all help acheive this goal.</span>
         </div>      
@@ -216,12 +86,9 @@
     <p>Vigenere cipher only encrypts alphabetic text by using multiple embedded Caesar ciphers. In this cipher, the key is polyalphabetical.</p>
     <br>
     <p>Submit the text file.</p>
-    <form action="/action_page.php">
+    <form action="/vigenere">
       <input type="file" id="myFile" name="filename">
-      <input type="submit">
-    </form>
-    <p> Submit the key you want to use.</p>
-    <form action="/action_page.php">
+      <p> Submit the key you want to use.</p>
       <input type="file" id="myFile" name="filename">
       <input type="submit">
     </form>
@@ -235,12 +102,9 @@
   <p>The data encryption standard encrypts groups of 64 message bits. The keys used for DES are also 64 bits, increasing complexity as well as efficiency. Encryption of text, images, as well as videos are possible with DES.</p>
   <br>
   <p>Submit the required file.</p>
-  <form action="/action_page.php">
+  <form action="/des">
     <input type="file" id="myFile" name="filename">
-    <input type="submit">
-  </form>
-  <p> Submit the key you want to use.</p>
-  <form action="/action_page.php">
+    <p> Submit the key you want to use.</p>
     <input type="file" id="myFile" name="filename">
     <input type="submit">
   </form>
@@ -254,12 +118,9 @@
   <p>The difference in Rivest-Shamir-Adleman encryption is that the key is public. But, if a message is encrypted with that key, it is only possible to decrypt using another private key.</p>
   <br>
   <p>Submit the required file.</p>
-  <form action="/action_page.php">
+  <form action="/rsa">
     <input type="file" id="myFile" name="filename">
-    <input type="submit">
-  </form>
-  <p> Submit the key you want to use.</p>
-  <form action="/action_page.php">
+    <p> Submit the key you want to use.</p>
     <input type="file" id="myFile" name="filename">
     <input type="submit">
   </form>
@@ -273,12 +134,7 @@
   <p>The message digest algorithm 5 uses hash algorithm which creates a 128 bit value from any input. Its output is always a fixed length. Encrypting text, images, and videos is also supported and widely used by md5.</p>
   <br>
   <p>Submit the required file.</p>
-  <form action="/action_page.php">
-    <input type="file" id="myFile" name="filename">
-    <input type="submit">
-  </form>
-  <p> Submit the key you want to use.</p>
-  <form action="/action_page.php">
+  <form action="/md5">
     <input type="file" id="myFile" name="filename">
     <input type="submit">
   </form>
