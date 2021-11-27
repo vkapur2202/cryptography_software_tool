@@ -32,9 +32,14 @@ def fmt8(num):
 def md5sum(msg):
     msg_length = len(msg) * 8 % (2**64)
     msg += b'\x80'
-    padded_length = len(msg) * 8 % (2**64)
-    zeros = (448 - padded_length % 512) % 512 // 8
-    msg += b'\x00' * zeros + msg_length.to_bytes(8, byteorder='little')
+    zeros = (448 - (msg_length + 8) % 512) % 512 // 8
+    msg += b'\x00' * zeros 
+
+    result = [msg_length, zeros * 8]
+
+    msg += msg_length.to_bytes(8, byteorder='little')
+
+    result.append(bin(msg_length)[2:])
 
     chunks = len(msg) * 8 // 512
 
@@ -55,29 +60,30 @@ def md5sum(msg):
         for j in range(16):
             M.append(int.from_bytes(block[j * size : (j+1) * size], byteorder="little"))
 
-        for k in range(64):
-            quarter = k // 16
+        for j in range(64):
+            quarter = j // 16
             if quarter == 0:
                 F = B & C | ~B & D
-                g = k
+                g = j
             elif quarter == 1:
                 F = B & D | C & ~D
-                g = (5 * k + 1) % 16
+                g = (5 * j + 1) % 16
             elif quarter == 2:
                 F = B ^ C ^ D
-                g = (3 * k + 5) % 16
+                g = (3 * j + 5) % 16
             elif quarter == 3:
                 F = C ^ (B | ~D)
-                g = (7 * k) % 16
-            F = F + A + integer_sine[k] + M[g]
+                g = (7 * j) % 16
+            F = F + A + integer_sine[j] + M[g]
             A = D
             D = C
             C = B
-            B = B + left_rotate(F, shifts[quarter][k % 4])
+            B = B + left_rotate(F, shifts[quarter][j % 4])
 
         a0 = (a0 + A) % (2**32)
         b0 = (b0 + B) % (2**32)
         c0 = (c0 + C) % (2**32)
         d0 = (d0 + D) % (2**32)
 
-    return fmt8(a0)+fmt8(b0)+fmt8(c0)+fmt8(d0)
+    result.append(fmt8(a0)+fmt8(b0)+fmt8(c0)+fmt8(d0))
+    return result

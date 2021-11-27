@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Bootstrap Carousel  -->
+  <title>Cryptographic Algorithms</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+</head>
+<body id="crypto" data-target=".navbar" data-spy="scroll" data-offset="50">
+
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="/">Team 2</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#crypto">Cryptographic Algorithms</a></li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown">Students
+          <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a>Sanhita Kumari</a></li>
+            <li><a>Aishwarya Krishnan</a></li>
+            <li><a>Jeffrey Kozik</a></li>
+            <li><a>Vivek Kapur</a></li> 
+          </ul>
+        </li>
+        <li><a href="/">Vigenere Cipher</a></li>
+        <li><a href="/">DES Encryption</a></li>
+        <li><a href="/">RSA</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div id="md5" class="back text-center">
+  <h3>md5 ENCRYPTION</h3>
+  <br>
+  <p> The message digest algorithm 5 uses hash algorithm which creates a 128 bit value from any input. 
+    Its output is always a fixed length. Encrypting text, images, and videos is also supported and 
+    widely used by md5. </p>
+</div>
+
+<p> 
+    First, we will pad the message by appending a "1" bit and then "0" bits are appended 
+    so that the length of our message is 64 bits shorter than a multiple of 512. 
+    <br>
+    <h3>Step 1:</h3>
+    <br>
+    In our message, we had an initial length of {{value[0]}} bits, so we added a "1" bit and {{value[1] + 7}} 
+    "0" bits to get a length of {{value[0] + value[1] + 8}} bits, 64 less than a multiple of 512
+    (512 &#215 {{(value[0] + value[1] + 72) // 512}} = {{value[0] + value[1] + 72}}).
+    <br>
+    <h3>Step 2:</h3>
+    We will now add a 64-bit representation of our original message length  
+    ({{value[0]}} to binary = "{{value[2]}}"). We now have our 512 bit multiple 
+    as we added 64 bits to our message.
+    <br>
+    {{value[-1]}}
+</p>
+
+</body>
+</html>

@@ -10,7 +10,8 @@ def index():
 @app.route('/md5', methods=['POST'])
 def md5():
     f = request.files['md5file']
-    return md5sum(f.read())
+    steps = md5sum(f.read())
+    return render_template('md5.html', value=steps)
     
 if __name__ == '__main__':
    app.run(debug = True)
