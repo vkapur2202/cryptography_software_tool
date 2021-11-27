@@ -55,10 +55,10 @@ def md5sum(msg):
         D = d0
 
         block = msg[i * 64 : (i + 1) * 64]
-        size = len(block) // 16
+        
         M = []
         for j in range(16):
-            M.append(int.from_bytes(block[j * size : (j+1) * size], byteorder="little"))
+            M.append(int.from_bytes(block[j * 4 : (j+1) * 4], byteorder="little"))
 
         for j in range(64):
             quarter = j // 16

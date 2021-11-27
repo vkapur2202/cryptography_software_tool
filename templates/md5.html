@@ -54,21 +54,52 @@
 </div>
 
 <p> 
+  <h1>Your file hash is: 
+    <br>
+    {{value[3]}}
+  </h1>
+    <h3>Step 1:</h3>
     First, we will pad the message by appending a "1" bit and then "0" bits are appended 
     so that the length of our message is 64 bits shorter than a multiple of 512. 
-    <br>
-    <h3>Step 1:</h3>
-    <br>
     In our message, we had an initial length of {{value[0]}} bits, so we added a "1" bit and {{value[1] + 7}} 
     "0" bits to get a length of {{value[0] + value[1] + 8}} bits, 64 less than a multiple of 512
     (512 &#215 {{(value[0] + value[1] + 72) // 512}} = {{value[0] + value[1] + 72}}).
     <br>
     <h3>Step 2:</h3>
     We will now add a 64-bit representation of our original message length  
-    ({{value[0]}} to binary = "{{value[2]}}"). We now have our 512 bit multiple 
+    ({{value[0]}} to binary = "{{value[2]}}"). We now have a length that is a multiple of 512
     as we added 64 bits to our message.
     <br>
-    {{value[-1]}}
+    <h3>Step 3:</h3>
+    For each 512 bit chunk, we will split the chunk into 16 32-bit words. We start by initializing 
+    4 32-bit registers as follows (in hexadecimal):
+    <br>
+    A = 0x67452301
+    <br>
+    B = 0xefcdab89
+    <br>
+    C = 0x98badcfe
+    <br>
+    D = 0x10325476
+    <br>
+    <h3>Step 4:</h3>
+    Each block goes through 64 operations in 4 rounds of 16 operations differentiated by 
+    a different nonlinear funtion F, all of which take three 32-bit words to produce 
+    a single 32-bit word. The different functions are below followed by a graphical overview
+    of each opeation.
+    <br>
+    <img src="/static/images/functions.svg" width="300" height="200">
+    <br>
+    <img src="/static/images/md5.png" width="300" height="300">
+    <br>
+    In this image, M<sub>i</sub> denotes 
+    a 32-bit block of the message input, and K<sub>i</sub> denotes a 32-bit constant, 
+    different for each operation. &lt&lt&lts denotes a left bit rotation by s places; 
+    s varies for each operation. &#8862 denotes addition modulo 2<sup>32</sup>.
+    <br>
+    <h3>Step 5:</h3>
+    Once our entire message has been processed, the final values of the constants after all
+    operations is combined to create our MD5 hash. This gives us {{value[3]}}
 </p>
 
 </body>
