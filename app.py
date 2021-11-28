@@ -18,10 +18,10 @@ def md5():
 def vigenere():
     f = request.files['vfile']
     #f2 = request.files['vkfile']
-    #repeated_key = keygen(f2.read(), f.read())
-    steps = encrypt("YTWdw34@", f.read())
-    steps2 = decrypt("YTWdw34@", f.read())
-
+    #repeated_key = keygen("YTWdw", f.read())
+    step1 = encrypt("YTWdw", f.read())
+    steps2 = decrypt("YTWdw", step1)
+    steps = "The encrypted message is " + steps2
     #b_repeated_key = b_keygen(f2.read(), f.read())
     #b_steps = b_encrypt(f2.read(), f.read())
     #b_steps2 = b_decrypt(f2.read(), f.read())
