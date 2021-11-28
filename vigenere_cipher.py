@@ -15,7 +15,6 @@ ascii = [characterCode for characterCode in (chr(i) for i in range(32,127))]
 
 # Reading from file upload
 def file_read(file_path):
-  l = []
   with open(file_path, 'r') as f:
     content = f.read()
 
@@ -49,7 +48,7 @@ def decrypt(key, cipher_text):
 
 # Testing for inputs and encryption/decryption process
 
-key = "YTWdw"
+key = file_read("vigenere_key.txt")
 ascii_text = file_read("testFiles/test1.txt")
 
 # Generating the repeated key
@@ -99,7 +98,7 @@ def b_decrypt(key, cipher_text):
 
 # Testing for inputs and encryption/decryption process with bytes method
 
-key = "YTWdw"
+key = file_read("vigenere_key.txt")
 ascii_text = file_read("testFiles/test1.txt")
 
 # Generating the repeated key

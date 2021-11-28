@@ -86,14 +86,14 @@
     <p>Vigenere cipher only encrypts alphabetic text by using multiple embedded Caesar ciphers. In this cipher, the key is polyalphabetical.</p>
     <br>
     <p>Submit the text file.</p>
-    <form action="/vigenere">
-      <input type="file" id="myFile" name="filename">
+    <form action="/vigenere" method="POST" enctype="multipart/form-data">
+      <input type="file" id="myFile" name="vfile">
       <p> Submit the key you want to use.</p>
-      <input type="file" id="myFile" name="filename">
-      <input type="submit">
+      <!-- <input type="file" id="myFile" name="vkfile"> -->
+      <input class="et_pb_button" type="submit" value="ENCRYPT">
+      <!-- <input class="et_pb_button" type="submit" value="DECRYPT"> -->
     </form>
     <br><br>
-    <a class="et_pb_button" title="encrypt" href="#">ENCRYPT</a><a class="et_pb_button" title="decrypt" href="#">DECRYPT</a>
 </div>
 
 <div id="des" class="back text-center">
