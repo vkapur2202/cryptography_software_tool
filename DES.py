@@ -95,13 +95,40 @@ S8 = [[13, 2, 8, 4, 6, 15, 11, 1, 10, 9, 3, 14, 5, 0, 12, 7],
       [2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11]]
 
 
-def file_to_bits(file_path: str) -> bitarray:
-    fl = open(file_path, 'rb')
-    bit_array = bitarray(endian="big")
-    bit_array.fromfile(fl)
+def des_msg(input1, input2):
+    result = []
 
-    file_bitarray = bit_array.copy()
-    return file_bitarray
+    if len(input2) == 16:
+        msg = input1
+        key = input2
+    elif len(input1) == 16:
+        msg = input2
+        key = input1
+    else:
+        raise ValueError("No 16-character hexadecimal key provided")
+
+    result.append(key.decode("utf-8"))
+    bit_key = bitarray(bin(int(key, 16))[2:].zfill(64))
+    result.append(bit_key.to01())
+    bit_msg = bitarray()
+    bit_msg.frombytes(msg)
+    zeros_to_pad = 64 - (len(bit_msg) % 64)
+    bit_msg += bitarray('0')*zeros_to_pad
+
+    k_plus, keys = generate_keys(bit_key)
+    result.append(k_plus.to01())
+    for i in range(len(keys)):
+        result.append(keys[i].to01())
+
+    isEncrypt = True
+    Ls, Rs, cipher = encrypt(bit_msg, keys, isEncrypt)
+    for i in range(len(Ls)):
+        result.append(Ls[i].to01())
+        result.append(Rs[i].to01())
+
+    result.append(cipher.to01())
+
+    return result
 
 
 def apply_transformation(input_string: bitarray, transform):
@@ -117,11 +144,7 @@ def left_shift(input_string: bitarray, num_shifts: int):
     return input_string[num_shifts:] + input_string[0:num_shifts]
 
 
-def generate_keys(input_key: str):
-    if len(input_key) != 16:
-        raise ValueError("Key should be a 16 hexadecimal digit input")
-
-    binary_key = bitarray(bin(int(input_key, 16))[2:].zfill(64))
+def generate_keys(binary_key):
     k_plus = apply_transformation(binary_key, PC1)
 
     keys: List[bitarray] = [bitarray()] * 16
@@ -133,7 +156,7 @@ def generate_keys(input_key: str):
         D.append(left_shift(D[i - 1], LeftShiftSched[i - 1]))
         keys[i - 1] = apply_transformation(C[i] + D[i], PC2)
 
-    return keys
+    return k_plus, keys
 
 
 def s_box(input_bits: bitarray, s_box_num: int):
@@ -157,9 +180,8 @@ def f(input_string: bitarray, input_key: bitarray):
     return F
 
 
-def encrypt(input_binary_file: bitarray, input_key: str, is_encryption: bool):
-    keys = generate_keys(input_key)
-    print('DES Cryptography Tool: Keys Generated')
+def encrypt(input_binary_file: bitarray, keys, is_encryption: bool):
+    # print('DES Cryptography Tool: Keys Generated')
     if not is_encryption:
         keys.reverse()
 
@@ -188,18 +210,4 @@ def encrypt(input_binary_file: bitarray, input_key: str, is_encryption: bool):
     print('Cipher Message: ')
     print(output)
 
-    return output
-
-
-def encrypt_file(file_path: str, input_key: str, is_encryption: bool = True) -> bitarray:
-    input_binary_file = file_to_bits(file_path)
-    print('DES Cryptography Tool: File Initialized')
-
-    return encrypt(input_binary_file, input_key, is_encryption)
-
-
-if __name__ == '__main__':
-    path = '/Users/aishwarya/Documents/PycharmProjects/DES_Crypto/testFiles/test1.txt'
-    key = '133457799BBCDFF1'
-    cipher = encrypt_file(path, key, True)
-    decipher = encrypt(cipher, key, False)
+    return L, R, output

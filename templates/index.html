@@ -102,14 +102,16 @@
   <p>The data encryption standard encrypts groups of 64 message bits. The keys used for DES are also 64 bits, increasing complexity as well as efficiency. Encryption of text, images, as well as videos are possible with DES.</p>
   <br>
   <p>Submit the required file.</p>
-  <form action="/des">
-    <input type="file" id="myFile" name="filename">
+  <form action="/des" method="POST" enctype="multipart/form-data">
+    <input type="file" id="myFile" name="desfile[]" multiple="" >
     <p> Submit the key you want to use.</p>
-    <input type="file" id="myFile" name="filename">
-    <input type="submit">
+    <!-- <input type="file" id="myFile" name="desfile[]"> -->
+    <!-- <input type="submit"> -->
+    <input class="et_pb_button" type="submit" value="DES ENCRYPT">
+    <input class="et_pb_button" type="submit" value="DES DECRYPT">
   </form>
   <br><br>
-  <a class="et_pb_button" title="encrypt" href="#">ENCRYPT</a><a class="et_pb_button" title="decrypt" href="#">DECRYPT</a>
+  <!-- <a class="et_pb_button" title="encrypt" href="#">ENCRYPT</a><a class="et_pb_button" title="decrypt" href="#">DECRYPT</a> -->
 </div>
 
 <div id="rsa" class="container text-center">
