@@ -55,7 +55,61 @@
 </div>
 
 <p>
-{{value}}
+<h1>Your encrypted file is:
+    <br>
+    {{value[53]}}
+  </h1>
+    <h3>Step 1: Key Generation</h3>
+    The key specified was {{value[0]}}. First the key is converted into binary:
+    <br>
+    Key = {{value[1]}}
+    <br>
+    The PC1 table is used to remove every 8th bit, and permute the remaining bits. The resulting 56-bit key is:
+    <br>
+    K-Plus = {{value[2]}}
+    <br>
+    This key is split into two halves (C and D arrays), and a series of left shifts according to the following table are performed:
+    <br>
+    <img src="/static/images/des_leftShift.png" width="200" height="300">
+    <br>
+    Each Index of the C and D arrays are concatenated, and the PC2 table permutes each of these to obtain 16 keys:
+    <br>
+    K1 = {{value[3]}}
+    <br>
+    K2 = {{value[4]}}
+    <br>
+    K3 = {{value[5]}}
+    <br>
+    K4 = {{value[6]}}
+    <br>
+    K5 = {{value[7]}}
+    <br>
+    K6 = {{value[8]}}
+    <br>
+    K7 = {{value[9]}}
+    <br>
+    K8 = {{value[10]}}
+
+    <br>
+    K9 = {{value[11]}}
+    <br>
+    K10 = {{value[12]}}
+    <br>
+    K11 = {{value[13]}}
+    <br>
+    K12 = {{value[14]}}
+
+    <br>
+    K13 = {{value[15]}}
+    <br>
+    K14 = {{value[16]}}
+    <br>
+    K15 = {{value[17]}}
+    <br>
+    K16 = {{value[18]}}
+
+    <h3>Step 2: Encrypting the Message</h3>
+
 </p>
 <!-- <p>
 {{value1}}

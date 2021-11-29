@@ -1,6 +1,7 @@
 from typing import List
 from bitarray import bitarray
 from bitarray.util import ba2int
+import codecs
 
 IP = [[58, 50, 42, 34, 26, 18, 10, 2],
       [60, 52, 44, 36, 28, 20, 12, 4],
@@ -109,23 +110,24 @@ def des_msg(input1, input2):
 
     result.append(key.decode("utf-8"))
     bit_key = bitarray(bin(int(key, 16))[2:].zfill(64))
-    result.append(bit_key.to01())
+    result.append(' '.join((bit_key.to01())[i:i + 8] for i in range(0, len(bit_key), 8)))
     bit_msg = bitarray()
     bit_msg.frombytes(msg)
     zeros_to_pad = 64 - (len(bit_msg) % 64)
     bit_msg += bitarray('0')*zeros_to_pad
 
     k_plus, keys = generate_keys(bit_key)
-    result.append(k_plus.to01())
-    for i in range(len(keys)):
-        result.append(keys[i].to01())
+    result.append(' '.join((k_plus.to01())[i:i + 7] for i in range(0, len(k_plus), 7)))
+    for k in range(len(keys)):
+        result.append(' '.join((keys[k].to01())[i:i + 8] for i in range(0, len(keys[k]), 8)))
 
     isEncrypt = True
     Ls, Rs, cipher = encrypt(bit_msg, keys, isEncrypt)
-    for i in range(len(Ls)):
-        result.append(Ls[i].to01())
-        result.append(Rs[i].to01())
+    for j in range(len(Ls)):
+        result.append(Ls[j].to01())
+        result.append(Rs[j].to01())
 
+    a = str(cipher.tobytes())
     result.append(cipher.to01())
 
     return result
