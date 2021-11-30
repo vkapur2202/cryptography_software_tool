@@ -39,6 +39,11 @@ def des():
     steps = DES.des_msg(f[0].read(), f[1].read())
     return render_template('des.html', value=steps)
 
+@app.route('/rsa', methods=['POST'])
+def rsa():
+    f = request.files["rsafile"]
+    steps = rsa.rsa(f)
+    return render_template('rsa.html', value=steps)
 
 if __name__ == '__main__':
     app.run(debug=True)

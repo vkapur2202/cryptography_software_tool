@@ -20,7 +20,7 @@
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
+        <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="/">Team 2</a>
     </div>
@@ -34,7 +34,7 @@
             <li><a>Sanhita Kumari</a></li>
             <li><a>Aishwarya Krishnan</a></li>
             <li><a>Jeffrey Kozik</a></li>
-            <li><a>Vivek Kapur</a></li> 
+            <li><a>Vivek Kapur</a></li>
           </ul>
         </li>
         <li><a href="#vigenere">Vigenere Cipher</a></li>
@@ -59,14 +59,14 @@
         <div class="carousel-caption">
           <p>Cryptography is the study of communications that are secured. A cipher (cryptographic algorithm) is used for encryption and decryption and is a mathematical set of operation. A cryptographic algorithm usually consists of a plain text and a key.</p>
           <p>Encryption essentially is used to turn online private text into "your eyes only" text. Ensuring that your personal information is encrypted while being over through the internet is crucial.</p>
-        </div>      
+        </div>
       </div>
 
       <div class="item">
         <img src="/static/images/cara3.jpg" width="1200" height="600">
         <div class="carousel-caption">
           <span>Securing communication and transfers over the web prevents tampering and misuse of that information. Hence, cryptography plays an important role in our day to day web transactions. When layers of cryptograhic algorithms are applied to sensitive data, it becomes impossible for someone to read it and modify it. Cryptographic keys, digital certificates, and cryptographic libraries all help acheive this goal.</span>
-        </div>      
+        </div>
       </div>
     </div>
 
@@ -120,14 +120,15 @@
   <p>The difference in Rivest-Shamir-Adleman encryption is that the key is public. But, if a message is encrypted with that key, it is only possible to decrypt using another private key.</p>
   <br>
   <p>Submit the required file.</p>
-  <form action="/rsa">
-    <input type="file" id="myFile" name="filename">
-    <p> Submit the key you want to use.</p>
-    <input type="file" id="myFile" name="filename">
+  <form action="/rsa" method="POST" enctype="multipart/form-data">
+    <input type="file" id="myFile" name="rsafile">
+    <!-- <p> Submit the key you want to use.</p>
+    <input type="file" id="myFile" name="filename"> -->
     <input type="submit">
   </form>
   <br><br>
-  <a class="et_pb_button" title="encrypt" href="#">ENCRYPT</a><a class="et_pb_button" title="decrypt" href="#">DECRYPT</a>
+  <!-- <a class="et_pb_button" title="encrypt" href="#">ENCRYPT & DECRYPT</a> -->
+  <!-- <a class="et_pb_button" title="decrypt" href="#">DECRYPT</a> -->
 </div>
 
 <div id="md5" class="back text-center">
@@ -152,7 +153,7 @@
 
 <script>
 $(document).ready(function(){
-  $('[data-toggle="tooltip"]').tooltip(); 
+  $('[data-toggle="tooltip"]').tooltip();
   $(".navbar a, footer a[href='#crypto']").on('click', function(event) {
     if (this.hash !== "") {
       event.preventDefault();

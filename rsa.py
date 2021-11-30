@@ -56,6 +56,7 @@ def create_file(file, int_array, new_name):
     for byte in L:
         f.write(byte)
     f.close()
+    return f
 
 def pow(base, exponent, mod):
     res = 1
@@ -147,17 +148,41 @@ def computeD(e, phiN):
     if b == 1:
         return a % phiN
 
-def generatePublicAndPrivateKey():
+def generatePublicAndPrivateKey(steps):
     p = chooseLargePrime(1024)
+    if (not "Alice p" in steps):
+        steps["Alice p"] = p
+    else:
+        steps["Bob p"] = p
     # print("p", p)
     q = chooseLargePrime(1024)
+    if (not "Alice q" in steps):
+        steps["Alice q"] = q
+    else:
+        steps["Bob q"] = q
     # print("q", q)
     n = p*q
+    if (not "Alice n" in steps):
+        steps["Alice n"] = n
+    else:
+        steps["Bob n"] = n
     phiN = p*q - p - q + 1
+    if (not "Alice phiN" in steps):
+        steps["Alice phiN"] = phiN
+    else:
+        steps["Bob phiN"] = phiN
     print("phiN", phiN)
     e = chooseE(n, phiN)
+    if (not "Alice e" in steps):
+        steps["Alice e"] = e
+    else:
+        steps["Bob e"] = e
     print("e", e)
     d = computeD(e, phiN)
+    if (not "Alice d" in steps):
+        steps["Alice d"] = d
+    else:
+        steps["Bob d"] = d
     print("d", d)
     publicKey = [e, n]
     privateKey = d
@@ -187,8 +212,8 @@ def decipherMessageForIntegrityAndAuthentication(c, publicKey):
         m.append(pow(block, publicKey[0], publicKey[1]))
     return m
 
-def rsaForConfidentiality(file):
-    alicePublicKey, alicePrivateKey = generatePublicAndPrivateKey()
+def rsaForConfidentiality(steps, file):
+    alicePublicKey, alicePrivateKey = generatePublicAndPrivateKey(steps)
     print("Alice's Public Key: ")
     print(alicePublicKey[0])
     print(alicePublicKey[1])
@@ -201,8 +226,8 @@ def rsaForConfidentiality(file):
     # create_file(file, bobMessageDecryptedForConfidentiality, "bobMessageDecryptedForConfidentiality")
     print("Bob's Message Decrypted for Confidentiality: ", bobMessageDecryptedForConfidentiality)
 
-def rsaForIntegrityAndAuthentication(file):
-    alicePublicKey, alicePrivateKey = generatePublicAndPrivateKey()
+def rsaForIntegrityAndAuthentication(steps, file):
+    alicePublicKey, alicePrivateKey = generatePublicAndPrivateKey(steps)
     print("Alice's Public Key: ")
     print(alicePublicKey[0])
     print(alicePublicKey[1])
@@ -217,14 +242,14 @@ def rsaForIntegrityAndAuthentication(file):
     # create_file(file, aliceMessageDecryptedForIntegrityAndAuthentication, "aliceMessageDecryptedForIntegrityAndAuthentication")
     print("Alice's Message Decrypted for Integrity and Authentication: ", aliceMessageDecryptedForIntegrityAndAuthentication)
 
-def rsaForConfidentialityIntegrityAndAuthentication(file):
-    alicePublicKey, alicePrivateKey = generatePublicAndPrivateKey()
+def rsaForConfidentialityIntegrityAndAuthentication(steps, file):
+    alicePublicKey, alicePrivateKey = generatePublicAndPrivateKey(steps)
     print("Alice's Public Key: ")
     print(alicePublicKey[0])
     print(alicePublicKey[1])
     print("Alice's Private Key: ")
     print(alicePrivateKey)
-    bobPublicKey, bobPrivateKey = generatePublicAndPrivateKey()
+    bobPublicKey, bobPrivateKey = generatePublicAndPrivateKey(steps)
     print("Bob's Public Key: ")
     print(bobPublicKey[0])
     print(bobPublicKey[1])
@@ -234,23 +259,30 @@ def rsaForConfidentialityIntegrityAndAuthentication(file):
     # aliceMessage = [87, 72, 66, 73, 83, 88, 66, 73, 0]
     print("Alice's Message: ", aliceMessage)
     aliceMessageEncryptedForIntegrityAndAuthentication = encipherMessageForIntegrityAndAuthentication(aliceMessage, alicePrivateKey, alicePublicKey[1])
-    create_file(file, aliceMessageEncryptedForIntegrityAndAuthentication, "aliceMessageEncryptedForIntegrityAndAuthentication")
+    f = create_file(file, aliceMessageEncryptedForIntegrityAndAuthentication, "aliceMessageEncryptedForIntegrityAndAuthentication")
+    steps["aliceMessageEncryptedForIntegrityAndAuthentication"] = f
     print("Alice's Message Encrypted for Integrity and Authentication: ", aliceMessageEncryptedForIntegrityAndAuthentication)
     aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication = encipherMessageForConfidentiality(aliceMessageEncryptedForIntegrityAndAuthentication, bobPublicKey)
-    create_file(file, aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication, "aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication")
+    f = create_file(file, aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication, "aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication")
+    steps["aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication"] = f
     print("Alice's Message Encrypted for Confidentiality, Integrity, and Authentication: ", aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication)
     aliceMessageDecryptedForConfidentiality = decipherMessageForConfidentiality(aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication, bobPrivateKey, bobPublicKey[1])
-    create_file(file, aliceMessageDecryptedForConfidentiality, "aliceMessageDecryptedForConfidentiality")
+    f = create_file(file, aliceMessageDecryptedForConfidentiality, "aliceMessageDecryptedForConfidentiality")
+    steps["aliceMessageDecryptedForConfidentiality"] = f
     print("Alice's Message Decrypted for Confidentiality: ", aliceMessageDecryptedForConfidentiality)
     aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication = decipherMessageForIntegrityAndAuthentication(aliceMessageDecryptedForConfidentiality, alicePublicKey)
-    create_file(file, aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication, "aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication")
+    f = create_file(file, aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication, "aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication")
+    steps["aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication"] = f
     print("Alice's Message Decrypted for Confidentiality, Integrity, and Authentication: ", aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication)
 
 def rsa(file):
-    # rsaForConfidentiality(file)
+    # rsaForConfidentiality(steps, file)
     # print()
-    # rsaForIntegrityAndAuthentication(file)
+    # rsaForIntegrityAndAuthentication(steps, file)
     # print()
-    rsaForConfidentialityIntegrityAndAuthentication(file)
+    steps = {}
+    rsaForConfidentialityIntegrityAndAuthentication(steps, file)
+    return steps
 
-rsa(file)
+r = rsa(file)
+print(r)
