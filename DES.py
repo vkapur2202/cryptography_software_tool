@@ -99,14 +99,11 @@ S8 = [[13, 2, 8, 4, 6, 15, 11, 1, 10, 9, 3, 14, 5, 0, 12, 7],
 def des_msg(input1, input2):
     result = []
 
-    if len(input2) == 16:
-        msg = input1
-        key = input2
-    elif len(input1) == 16:
-        msg = input2
-        key = input1
-    else:
+    if len(input2) != 16:
         raise ValueError("No 16-character hexadecimal key provided")
+
+    msg = input1
+    key = input2
 
     result.append(key.decode("utf-8"))
     bit_key = bitarray(bin(int(key, 16))[2:].zfill(64))

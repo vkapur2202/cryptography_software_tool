@@ -38,16 +38,22 @@ def vigenere():
     #     else:
     #         f2 = files
     #rk = keygen(f2.read().decode('utf-8'), f.read().decode('utf-8'))
+    l = []
     steps = encrypt(f2.read().decode('utf-8'), f.read().decode('utf-8'))
     steps2 = decrypt("UTIWG", steps)
-    return render_template('vigenere.html', value=steps2)
+    l.append(steps)
+    l.append(steps2)
+    # l.append(rk)
+    return render_template('vigenere.html', value=l)
 
 
 @app.route('/des', methods=['POST'])
 def des():
-    f = request.files.getlist("desfile[]")
-    steps = DES.des_msg(f[0].read(), f[1].read())
+    f1 = request.files['desfile']
+    f2 = request.files['deskey']
+    steps = DES.des_msg(f1.read(), f2.read())
     return render_template('des.html', value=steps)
+
 
 @app.route('/rsa', methods=['POST'])
 def render_rsa():
