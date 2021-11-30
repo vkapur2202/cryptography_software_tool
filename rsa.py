@@ -157,13 +157,13 @@ def computeD(e, phiN):
         return a % phiN
 
 def generatePublicAndPrivateKey(steps):
-    p = chooseLargePrime(128)
+    p = chooseLargePrime(32)
     if (not "Alice p" in steps):
         steps["Alice p"] = p
     else:
         steps["Bob p"] = p
     # print("p", p)
-    q = chooseLargePrime(128)
+    q = chooseLargePrime(32)
     if (not "Alice q" in steps):
         steps["Alice q"] = q
     else:
