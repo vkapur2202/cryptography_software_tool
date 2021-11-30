@@ -19,6 +19,12 @@ def file_read(file_path):
     content = f.read()
 
   return content 
+
+# To binary
+def keychange(key):
+  key = key.decode('utf-8')
+
+  return key
 # Key generation 
 # Vigenere key is taken as input and repeated till the length of the English text
 def keygen(key, ascii_text):
@@ -31,7 +37,8 @@ def keygen(key, ascii_text):
 # Encryption
 # Takes repeated key and shifts the ascii text given to encrypt
 def encrypt(key, ascii_text):
-  ascii_text = ascii_text.decode('utf-8')
+  # ascii_text = ascii_text.decode('utf-8')
+  # key = key.decode('utf-8')
   cipher_text = ""
   for i in range(len(ascii_text)):
     cipher_text+= ascii[(ascii.index(ascii_text[i])+ascii.index(key[i%len(key)]))%len(ascii)]
@@ -40,28 +47,32 @@ def encrypt(key, ascii_text):
 # Decryption
 # Takes repeated key and bak shifts the cipher text given to edecrypt
 def decrypt(key, cipher_text):
+  #cipher_text = cipher_text.decode('utf-8')
+  # key = key.decode('utf-8')
   original_text = ""
   for i in range(len(cipher_text)):
     original_text+= ascii[(ascii.index(cipher_text[i])-ascii.index(key[i%len(key)]))%len(ascii)]
 
   return original_text
 
+# key = file_read("testFiles/vigenere_key.txt")
+# print(keychange(key))
 # Testing for inputs and encryption/decryption process
 
-# key = file_read("vigenere_key.txt")
-# ascii_text = file_read("testFiles/test1.txt")
+key = file_read("testFiles/vigenere_key.txt")
+ascii_text = file_read("testFiles/test1.txt")
 
-# # Generating the repeated key
-# repeated_key = keygen(key, ascii_text)
-# print("The repeated key is: " + repeated_key)
+# Generating the repeated key
+repeated_key = keygen(key, ascii_text)
+print("The repeated key is: " + repeated_key)
 
-# # Encryption of text
-# encrypted_text = encrypt(key, ascii_text)
-# print("The encypted message is: " + encrypted_text)
+# Encryption of text
+encrypted_text = encrypt(key, ascii_text)
+print("The encypted message is: " + encrypted_text)
 
-# # Decryption of cipher text
-# decrypted_text = decrypt(key, encrypted_text)
-# print("The decypted message is: " + decrypted_text)
+# Decryption of cipher text
+decrypted_text = decrypt(key, encrypted_text)
+print("The decypted message is: " + decrypted_text)
 
 
 #All readable ascii encryption using vigenere cypher in bytes to improve efficiency
@@ -98,7 +109,7 @@ def b_decrypt(key, cipher_text):
 
 # Testing for inputs and encryption/decryption process with bytes method
 
-# key = file_read("vigenere_key.txt")
+# key = file_read("testFiles/vigenere_key.txt")
 # ascii_text = file_read("testFiles/test1.txt")
 
 # # Generating the repeated key
