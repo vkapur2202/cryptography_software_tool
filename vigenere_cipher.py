@@ -125,3 +125,12 @@ print("The encypted message is: " + encrypted_text)
 # decrypted_text = b_decrypt(key, encrypted_text)
 # print("The decypted message is: " + decrypted_text)
 
+#Function to be used for html upload
+# def vsum():
+#   result = []
+#   enc_0 = encrypt(key, ascii_text)
+#   rep_1 = keygen(key, ascii_text)
+#   dec_2 = decrypt(key, cipher_text)
+
+#   result.append()
+

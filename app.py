@@ -36,9 +36,13 @@ def vigenere():
     #     else:
     #         f2 = files
     #rk = keygen(f2.read().decode('utf-8'), f.read().decode('utf-8'))
+    l = []
     steps = encrypt(f2.read().decode('utf-8'), f.read().decode('utf-8'))
     steps2 = decrypt("UTIWG", steps)
-    return render_template('vigenere.html', value=steps)
+    l.append(steps)
+    l.append(steps2)
+    # l.append(rk)
+    return render_template('vigenere.html', value=l)
 
 
 @app.route('/des', methods=['POST'])
