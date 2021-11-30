@@ -107,20 +107,21 @@ def b_decrypt(key, cipher_text):
 
   return original_text.decode('ascii')
 
+
 # Testing for inputs and encryption/decryption process with bytes method
 
-# key = file_read("testFiles/vigenere_key.txt")
-# ascii_text = file_read("testFiles/test1.txt")
+key = file_read("testFiles/vigenere_key.txt")
+ascii_text = file_read("testFiles/test1.txt")
 
-# # Generating the repeated key
-# repeated_key = b_keygen(key, ascii_text)
-# print("The repeated key is: " + repeated_key)
+# Generating the repeated key
+repeated_key = b_keygen(key, ascii_text)
+print("The repeated key is: " + repeated_key)
 
-# # Encryption of text
-# encrypted_text = b_encrypt(key, ascii_text)
-# print("The encypted message is: " + encrypted_text)
+# Encryption of text
+encrypted_text = b_encrypt(key, ascii_text)
+print("The encypted message is: " + encrypted_text)
 
-# # Decryption of cipher text
+# Decryption of cipher text
 # decrypted_text = b_decrypt(key, encrypted_text)
 # print("The decypted message is: " + decrypted_text)
 

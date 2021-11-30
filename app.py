@@ -38,7 +38,7 @@ def vigenere():
     #rk = keygen(f2.read().decode('utf-8'), f.read().decode('utf-8'))
     steps = encrypt(f2.read().decode('utf-8'), f.read().decode('utf-8'))
     steps2 = decrypt("UTIWG", steps)
-    return render_template('vigenere.html', value=steps2)
+    return render_template('vigenere.html', value=steps)
 
 
 @app.route('/des', methods=['POST'])
