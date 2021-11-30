@@ -1,6 +1,6 @@
 # Team 2
 # Vigenere Cypher is one of the simpler cyphers that encrypt only alphabetical text through repeated Caeser cypher.
-# Traditional vigenere cypher is repeated on alphabetical key with strictly alphabetic characters. 
+# Traditional vigenere cypher is repeated on alphabetical key with strictly alphabetic characters.
 # This code performs vigenere in a more advanced way
 # Two ways shown in this peice: 1) all ascii encoding (not just alphabets)
 #                               2) encryption done in bytes rather than strings for efficiency
@@ -18,14 +18,14 @@ def file_read(file_path):
   with open(file_path, 'r') as f:
     content = f.read()
 
-  return content 
+  return content
 
 # To binary
 def keychange(key):
   key = key.decode('utf-8')
 
   return key
-# Key generation 
+# Key generation
 # Vigenere key is taken as input and repeated till the length of the English text
 def keygen(key, ascii_text):
   v_key = ""
@@ -123,4 +123,3 @@ def b_decrypt(key, cipher_text):
 # # Decryption of cipher text
 # decrypted_text = b_decrypt(key, encrypted_text)
 # print("The decypted message is: " + decrypted_text)
-

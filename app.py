@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for
 from md5 import *
 from vigenere_cipher import *
 import DES
+import rsa
+import os
 
 app = Flask(__name__)
 
@@ -48,9 +50,13 @@ def des():
     return render_template('des.html', value=steps)
 
 @app.route('/rsa', methods=['POST'])
-def rsa():
+def render_rsa():
     f = request.files["rsafile"]
+    # f.save(os.path.join('tempFiles'), f.filename)
+    # fullPath = 'tempFiles/' + file.filename
     steps = rsa.rsa(f)
+    # steps[10].save("/rsa/" + steps[10])
+    # os.remove(fullPath)
     return render_template('rsa.html', value=steps)
 
 if __name__ == '__main__':

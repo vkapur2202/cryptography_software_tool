@@ -3,23 +3,29 @@
 
 import random
 import os
+from os.path import exists
 
 file = "testFiles/test1.txt"
 
 def file_to_bits(file_path):
     L = []
-    file = open(file_path, "rb")
-    byte = file.read(1)
-    int_val = int.from_bytes(byte, "big")
-    # print(int_val)
-    L.append(int_val)
-    while byte:
-        print(byte)
-        byte = file.read(1)
-        int_val = int.from_bytes(byte, "big")
-        print(int_val)
-        L.append(int_val)
-    file.close()
+    bit_array = file_path.read()
+    for bit in bit_array:
+        L.append(bit)
+        print("bit", bit)
+    # L = []
+    # file = open(file_path, "rb")
+    # byte = file.read(1)
+    # int_val = int.from_bytes(byte, "big")
+    # # print(int_val)
+    # L.append(int_val)
+    # while byte:
+    #     print(byte)
+    #     byte = file.read(1)
+    #     int_val = int.from_bytes(byte, "big")
+    #     print(int_val)
+    #     L.append(int_val)
+    # file.close()
 
     return L
 
@@ -36,7 +42,7 @@ def create_file(file, int_array, new_name):
                 num += 1
         print("this_byte", this_byte)
         L.append(this_byte)
-    directory_name = os.path.dirname(file)
+    # directory_name = os.path.dirname(file)
     # print("d name!!!", directory_name)
     file_name = ""
     extension = ""
@@ -50,6 +56,8 @@ def create_file(file, int_array, new_name):
         else:
             extension += char
     this_files_name = file_name + "_" + new_name + "." + extension
+    if(exists(this_files_name)):
+        os.remove(this_files_name)
     f = open(this_files_name, 'x')
     f.close()
     f = open(this_files_name, 'wb')
@@ -58,7 +66,7 @@ def create_file(file, int_array, new_name):
     f.close()
     return f
 
-def pow(base, exponent, mod):
+def mypow(base, exponent, mod):
     res = 1
     base = base % mod
 
@@ -107,10 +115,10 @@ def passedMillerRabin(potentialPrime):
     assert(2**r * evenComponent == potentialPrime - 1)
 
     def isComposite(a):
-        if pow(a, evenComponent, potentialPrime) == 1:
+        if mypow(a, evenComponent, potentialPrime) == 1:
             return False
         for i in range(r):
-            if pow(a, 2**i * evenComponent, potentialPrime) == potentialPrime - 1:
+            if mypow(a, 2**i * evenComponent, potentialPrime) == potentialPrime - 1:
                 return False
         return True
 
@@ -149,13 +157,13 @@ def computeD(e, phiN):
         return a % phiN
 
 def generatePublicAndPrivateKey(steps):
-    p = chooseLargePrime(1024)
+    p = chooseLargePrime(128)
     if (not "Alice p" in steps):
         steps["Alice p"] = p
     else:
         steps["Bob p"] = p
     # print("p", p)
-    q = chooseLargePrime(1024)
+    q = chooseLargePrime(128)
     if (not "Alice q" in steps):
         steps["Alice q"] = q
     else:
@@ -191,25 +199,25 @@ def generatePublicAndPrivateKey(steps):
 def encipherMessageForConfidentiality(m, publicKey):
     c = []
     for block in m:
-        c.append(pow(block, publicKey[0], publicKey[1]))
+        c.append(mypow(block, publicKey[0], publicKey[1]))
     return c
 
 def decipherMessageForConfidentiality(c, d, n):
     m = []
     for block in c:
-        m.append(pow(block, d, n))
+        m.append(mypow(block, d, n))
     return m
 
 def encipherMessageForIntegrityAndAuthentication(m, d, n):
     c = []
     for block in m:
-        c.append(pow(block, d, n))
+        c.append(mypow(block, d, n))
     return c
 
 def decipherMessageForIntegrityAndAuthentication(c, publicKey):
     m = []
     for block in c:
-        m.append(pow(block, publicKey[0], publicKey[1]))
+        m.append(mypow(block, publicKey[0], publicKey[1]))
     return m
 
 def rsaForConfidentiality(steps, file):
@@ -260,19 +268,19 @@ def rsaForConfidentialityIntegrityAndAuthentication(steps, file):
     print("Alice's Message: ", aliceMessage)
     aliceMessageEncryptedForIntegrityAndAuthentication = encipherMessageForIntegrityAndAuthentication(aliceMessage, alicePrivateKey, alicePublicKey[1])
     f = create_file(file, aliceMessageEncryptedForIntegrityAndAuthentication, "aliceMessageEncryptedForIntegrityAndAuthentication")
-    steps["aliceMessageEncryptedForIntegrityAndAuthentication"] = f
+    steps["aliceMessageEncryptedForIntegrityAndAuthentication"] = aliceMessageEncryptedForIntegrityAndAuthentication
     print("Alice's Message Encrypted for Integrity and Authentication: ", aliceMessageEncryptedForIntegrityAndAuthentication)
     aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication = encipherMessageForConfidentiality(aliceMessageEncryptedForIntegrityAndAuthentication, bobPublicKey)
     f = create_file(file, aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication, "aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication")
-    steps["aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication"] = f
+    steps["aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication"] = aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication
     print("Alice's Message Encrypted for Confidentiality, Integrity, and Authentication: ", aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication)
     aliceMessageDecryptedForConfidentiality = decipherMessageForConfidentiality(aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication, bobPrivateKey, bobPublicKey[1])
     f = create_file(file, aliceMessageDecryptedForConfidentiality, "aliceMessageDecryptedForConfidentiality")
-    steps["aliceMessageDecryptedForConfidentiality"] = f
+    steps["aliceMessageDecryptedForConfidentiality"] = aliceMessageDecryptedForConfidentiality
     print("Alice's Message Decrypted for Confidentiality: ", aliceMessageDecryptedForConfidentiality)
     aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication = decipherMessageForIntegrityAndAuthentication(aliceMessageDecryptedForConfidentiality, alicePublicKey)
     f = create_file(file, aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication, "aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication")
-    steps["aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication"] = f
+    steps["aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication"] = aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication
     print("Alice's Message Decrypted for Confidentiality, Integrity, and Authentication: ", aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication)
 
 def rsa(file):
@@ -282,7 +290,7 @@ def rsa(file):
     # print()
     steps = {}
     rsaForConfidentialityIntegrityAndAuthentication(steps, file)
-    return steps
+    return steps["Alice p"], steps["Alice q"], steps["Bob p"], steps["Bob q"], steps["Alice n"], steps["Alice phiN"], steps["Bob n"], steps["Bob phiN"], steps["Alice d"], steps["Bob d"], steps['aliceMessageEncryptedForIntegrityAndAuthentication'], steps['aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication'], steps['aliceMessageDecryptedForConfidentiality'], steps['aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication']
 
-r = rsa(file)
-print(r)
+# r = rsa(file)
+# print(r)

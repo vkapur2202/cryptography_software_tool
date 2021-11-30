@@ -62,16 +62,95 @@ Your public key consists of two numbers: n & e. We'll start by calculating n. n 
 </p>
 
 <p>
-To find a value for p we generate a random number that is 1024 bits long. We then make sure that this number doesn't have any of the first 100 primes as factors.
+To find a value for p we generate a random number that is 128 bits long (the longer the more secure, in practice 1024-2048 is usually used. I'm using 128 for speed). We then make sure that this number doesn't have any of the first 100 primes as factors.
 Finally, we run the Miller-Rabin test on this number 20 times. If a number passes the Miller-Rabin test once it has at least a 75% chance of being a prime.
 If it passes it twice it's 1-(0.25^2) chance. Since we're running it 20 times it's at least a 1-(0.25^20) chance that this number is prime. We use this
 method as it would be too computationally intensive to find a number that we 100% know is prime. The same method is used to find q.
 </p>
 
 <p>
-    Your p:  {{value['Alice p']}}
-    Your q:  {{value['Alice q']}}
+    Your p:  {{value[0]}}
 </p>
+
+<p>
+    Your q:  {{value[1]}}
+<p>
+
+<p>
+    Your friend's p:  {{value[2]}}
+</p>
+
+<p>
+    Your friend's q:  {{value[3]}}
+<p>
+
+<p>
+    n = p*q Your n:  {{value[4]}}
+</p>
+
+<p>
+    phiN is the number of integers relatively prime to n that are less than n: phiN = (p-1)(q-1) Your phiN: {{value[5]}}
+</p>
+
+<p>
+    Your friend's n:  {{value[6]}}
+</p>
+
+<p>
+    Your friend's phiN: {{value[7]}}
+</p>
+
+<p>
+    e is a number that is less than n and relatively prime to n. Most RSA algorithms simply use 65537 for e so both you and your friend's e = 65537
+</p>
+
+<p>
+    d satisifes ed mod phiN = 1. Your d = {{value[8]}},
+</p>
+
+<p>
+    your friend's d = {{value[9]}}
+</p>
+
+<p>
+    Your message encrypted for integrity and authentication = m^d mod n where m is the bytes of your message, d is your private key and n is part of your public key
+</p>
+
+<p>
+{{value[10]}}
+</p>
+
+<!-- <a href={{value[10]}} download="your_message_encrypted_for_integrity">Download</a> -->
+
+<p>
+    Your message encrypted for confidentiality, integrity, and authentication = m^e mod n where m is the bytes of your message encrypted for integrity/authentication, and e and n are your friend's public key
+</p>
+
+<p>
+{{value[11]}}
+</p>
+
+<!-- <a href={{value[11]}} download="your_message_encrypted_for_integrity_and_confidentiality">Download</a> -->
+
+<p>
+    To decrypt the confidentiality of your message do c^d mod n where c is your completely encrypted message, d is your friend's private key and n is part of your friend's public key
+</p>
+
+<p>
+{{value[12]}}
+</p>
+
+<!-- <a href={{value[12]}} download="your_message_decrypted_from_confidentiality">Download</a> -->
+
+<p>
+    To decrypt the integrity/authentication of your message do c^e mod n where c is your integrity/authentication encrypted message, and e and n is your public key
+</p>
+
+<p>
+{{value[13]}}
+</p>
+
+<!-- <a href={{value[13]}} download="your_message_completely_decrypted">Download</a> -->
 
 </body>
 </html>
