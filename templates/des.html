@@ -57,22 +57,31 @@
 <p>
 <h1>Your encrypted file is:
     <br>
-    {{value[53]}}
+    {{value[73]}}
   </h1>
     <h3>Step 1: Key Generation</h3>
+    <h4> (a) Converting Key to Binary</h4>
     The key specified was {{value[0]}}. First the key is converted into binary:
     <br>
     Key = {{value[1]}}
     <br>
-    The PC1 table is used to remove every 8th bit, and permute the remaining bits. The resulting 56-bit key is:
+    <h4> (b) Using PC1 table to generate a 56-bit key </h4>
+    The PC1 table is used to remove every 8th bit, and permute the remaining bits:
     <br>
-    K-Plus = {{value[2]}}
+    <img src="/static/images/des_PC1.png" width="300" height="200">
     <br>
+    The resulting 56-bit key is:
+    <br>
+    <b>K-Plus = {{value[2]}}</b>
+    <br>
+    <h4> (c) Left-Shifting the two halves of the 56-bit key and combine while permuting to generate 16 keys</h4>
     This key is split into two halves (C and D arrays), and a series of left shifts according to the following table are performed:
     <br>
     <img src="/static/images/des_leftShift.png" width="200" height="300">
     <br>
     Each Index of the C and D arrays are concatenated, and the PC2 table permutes each of these to obtain 16 keys:
+    <br>
+    <img src="/static/images/des_PC2.png" width="300" height="200">
     <br>
     K1 = {{value[3]}}
     <br>
@@ -89,7 +98,6 @@
     K7 = {{value[9]}}
     <br>
     K8 = {{value[10]}}
-
     <br>
     K9 = {{value[11]}}
     <br>
@@ -98,7 +106,6 @@
     K11 = {{value[13]}}
     <br>
     K12 = {{value[14]}}
-
     <br>
     K13 = {{value[15]}}
     <br>
@@ -109,11 +116,64 @@
     K16 = {{value[18]}}
 
     <h3>Step 2: Encrypting the Message</h3>
-
+    The input message was: {{value[19]}}
+    <h4> (a) Converting the message into binary blocks</h4>
+    The message is converted to binary, zero-padded and split into 64-bit blocks.
+    <br>
+    The message blocks are: {{value[20]}}
+    <br>
+    Each block is encrypted separately and concatenated.
+    <br> <br>
+    <b>The encryption for each individual block is completed in the following steps:</b>
+    <br>
+    <h4> (b) Initial Permutation of the block</h4>
+    For example, the first block of the message (M0) is: {{value[21]}}.
+    <br>
+    The IP table is used to permute the blocks:
+    <br>
+    <img src="/static/images/des_IP.png" width="350" height="200">
+    <br>
+    The initial permutation of M0 is: {{value[22]}}.
+    <br>
+    <h4> (c) Performing operations on the two halves of the permuted block</h4>
+    The permuted block is split in half to form L0 and R0.
+    Then L<sub>n</sub> and R<sub>n</sub> are calculated for n <= 16 according to the following formulas (where + represents XOR):
+    <br>
+    <img src="/static/images/des_LRFormulas.png" width="200" height="75">
+    <br>
+    The f function first uses the E table to convert the 32-bit input to 48-bit output B blocks
+(where B1 contains the first 6 bits, B2 the second 6 bits, and so on):
+    <br>
+    <img src="/static/images/des_E.png" width="300" height="200">
+    <br>
+    f is then calculated according to the following formula:
+    <img src="/static/images/des_fFormula.png" width="250" height="50">
+    <br><br>
+    The L, R and f function values for these n calculations are as follows:
+    <br>
+    <b>L0</b> = {{value[23]}}       &nbsp;&nbsp; &nbsp;&nbsp;              <b>R0</b> = {{value[24]}}
+    <br>
+    <b>L1</b> = {{value[25]}}    &nbsp;&nbsp;    <b>f</b> = {{value[26]}}    &nbsp;&nbsp;    <b>R1</b> = {{value[27]}}
+    <br>
+    <b>L2</b> = {{value[28]}}    &nbsp;&nbsp;    <b>f</b> = {{value[29]}}    &nbsp;&nbsp;    <b>R2</b> = {{value[30]}}
+    <br>
+    .
+    <br>
+    .
+    <br>
+    .
+    <br>
+    <b>L16</b> = {{value[70]}}    &nbsp;&nbsp;    <b>f</b> = {{value[71]}}    &nbsp;&nbsp;    <b>R16</b> = {{value[72]}}
+    <br><br>
+    The final cipher for the block permutes R16 XOR L16 with the IP inverse table:
+    <br>
+    <img src="/static/images/des_IPInv.png" width="300" height="150">
+    <br><br><br>
+    <h3> After completing steps 2(b) and 2(c) for each block, the cipher text generated is:
+    <br><br>
+    {{value[73]}}
+    </h3>
 </p>
-<!-- <p>
-{{value1}}
-</p> -->
 
 </body>
 </html>

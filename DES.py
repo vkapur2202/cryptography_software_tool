@@ -121,13 +121,20 @@ def des_msg(input1, input2):
     for k in range(len(keys)):
         result.append(' '.join((keys[k].to01())[i:i + 8] for i in range(0, len(keys[k]), 8)))
 
+    result.append(msg.decode("utf-8"))
+    result.append(' '.join((bit_msg.to01())[i:i + 64] for i in range(0, len(bit_msg), 64)))
+
     isEncrypt = True
-    Ls, Rs, cipher = encrypt(bit_msg, keys, isEncrypt)
-    for j in range(len(Ls)):
+    block1, msgIP, fs, Ls, Rs, cipher = encrypt(bit_msg, keys, isEncrypt)
+    result.append(block1.to01())
+    result.append(msgIP.to01())
+    result.append(Ls[0].to01())
+    result.append(Rs[0].to01())
+    for j in range(1, len(Ls)):
         result.append(Ls[j].to01())
+        result.append(fs[j - 1].to01())
         result.append(Rs[j].to01())
 
-    a = str(cipher.tobytes())
     result.append(cipher.to01())
 
     return result
@@ -191,25 +198,19 @@ def encrypt(input_binary_file: bitarray, keys, is_encryption: bool):
     for i in range(int(len(input_binary_file) / 64)):
         blocks.append(input_binary_file[64 * i:64 * (i + 1)])
 
-    # blocks = [bitarray('0000000100100011010001010110011110001001101010111100110111101111')]  # for testing
-    # blocks = [bitarray('1000010111101000000100110101010000001111000010101011010000000101')]  # for testing
-
     output = bitarray()
-    for m in blocks:
+    for i in range(len(blocks)):
+        m = blocks[len(blocks) - i - 1]
         messageIP = apply_transformation(m, IP)
         size = int(len(messageIP) / 2)
         L = [messageIP[0:size], ]
         R = [messageIP[size:], ]
-
+        fs = []
         for i in range(1, 17):
             L.append(R[i - 1])
+            fs.append(f(R[i - 1], keys[i - 1]))
             R.append(L[i - 1] ^ f(R[i - 1], keys[i - 1]))
 
         output += apply_transformation(R[16] + L[16], IP_Inv)
 
-    print('Original Message: ')
-    print(input_binary_file)
-    print('Cipher Message: ')
-    print(output)
-
-    return L, R, output
+    return m, messageIP, fs, L, R, output
