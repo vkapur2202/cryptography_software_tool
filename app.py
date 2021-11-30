@@ -47,9 +47,11 @@ def vigenere():
 
 @app.route('/des', methods=['POST'])
 def des():
-    f = request.files.getlist("desfile[]")
-    steps = DES.des_msg(f[0].read(), f[1].read())
+    f1 = request.files['desfile']
+    f2 = request.files['deskey']
+    steps = DES.des_msg(f1.read(), f2.read())
     return render_template('des.html', value=steps)
+
 
 @app.route('/rsa', methods=['POST'])
 def rsa():
