@@ -24,27 +24,15 @@ def md5():
 def vigenere():
     f = request.files['vfile']
     f2 = request.files['vkfile']
-    #repeated_key = keygen("YTWdw", f.read())
-    # step1 = encrypt("YTWdw", f.read())
-    # steps2 = decrypt("YTWdw", step1)
-    # steps = "The decrypted message is " + steps2
-    # b_repeated_key = b_keygen(f2.read(), f.read())
-    # b_steps = b_encrypt(f2.read(), f.read())
-    # b_steps2 = b_decrypt(f2.read(), f.read())
-    # f = request.files.getlist("vfile[]")
-    # for files in request.files.getlist("vfile[]"):
-    #     if files.filename == "test1":
-    #         f = files
-    #     else:
-    #         f2 = files
-    #rk = keygen(f2.read().decode('utf-8'), f.read().decode('utf-8'))
-    l = []
-    steps = encrypt(f2.read().decode('utf-8'), f.read().decode('utf-8'))
-    steps2 = decrypt("UTIWG", steps)
-    l.append(steps)
-    l.append(steps2)
+    key = f2.read().decode('utf-8')
+    string = f.read().decode('utf-8')
+    
+    rk = keygen(key, string)
+    steps = encrypt(key, string)
+    steps2 = decrypt(key, steps)
+
     # l.append(rk)
-    return render_template('vigenere.html', value=l)
+    return render_template('vigenere.html', value=[rk, steps, steps2])
 
 
 @app.route('/des', methods=['POST'])

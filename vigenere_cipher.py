@@ -63,16 +63,16 @@ key = file_read("testFiles/vigenere_key.txt")
 ascii_text = file_read("testFiles/test1.txt")
 
 # Generating the repeated key
-repeated_key = keygen(key, ascii_text)
-print("The repeated key is: " + repeated_key)
+# repeated_key = keygen(key, ascii_text)
+# print("The repeated key is: " + repeated_key)
 
 # Encryption of text
-encrypted_text = encrypt(key, ascii_text)
-print("The encypted message is: " + encrypted_text)
+# encrypted_text = encrypt(key, ascii_text)
+# print("The encypted message is: " + encrypted_text)
 
 # Decryption of cipher text
-decrypted_text = decrypt(key, encrypted_text)
-print("The decypted message is: " + decrypted_text)
+# decrypted_text = decrypt(key, encrypted_text)
+# print("The decypted message is: " + decrypted_text)
 
 
 #All readable ascii encryption using vigenere cypher in bytes to improve efficiency
@@ -114,12 +114,12 @@ key = file_read("testFiles/vigenere_key.txt")
 ascii_text = file_read("testFiles/test1.txt")
 
 # Generating the repeated key
-repeated_key = b_keygen(key, ascii_text)
-print("The repeated key is: " + repeated_key)
+# repeated_key = b_keygen(key, ascii_text)
+# print("The repeated key is: " + repeated_key)
 
 # Encryption of text
-encrypted_text = b_encrypt(key, ascii_text)
-print("The encypted message is: " + encrypted_text)
+# encrypted_text = b_encrypt(key, ascii_text)
+# print("The encypted message is: " + encrypted_text)
 
 # Decryption of cipher text
 # decrypted_text = b_decrypt(key, encrypted_text)
