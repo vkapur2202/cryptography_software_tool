@@ -26,13 +26,10 @@ def vigenere():
     f2 = request.files['vkfile']
     key = f2.read().decode('utf-8')
     string = f.read().decode('utf-8')
-    
     rk = keygen(key, string)
     steps = encrypt(key, string)
     steps2 = decrypt(key, steps)
-
-    # l.append(rk)
-    return render_template('vigenere.html', value=[rk, steps, steps2])
+    return render_template('vigenere.html', value=[string, key, rk, steps, steps2])
 
 
 @app.route('/des', methods=['POST'])

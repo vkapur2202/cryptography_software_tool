@@ -62,6 +62,8 @@ def decrypt(key, cipher_text):
 key = file_read("testFiles/vigenere_key.txt")
 ascii_text = file_read("testFiles/test1.txt")
 
+#PLEASE UNCOMMENT TO SEE RESULTS ON TERMINAL FOR BYTE ENCRYPTION
+
 # Generating the repeated key
 # repeated_key = keygen(key, ascii_text)
 # print("The repeated key is: " + repeated_key)
@@ -113,6 +115,8 @@ def b_decrypt(key, cipher_text):
 key = file_read("testFiles/vigenere_key.txt")
 ascii_text = file_read("testFiles/test1.txt")
 
+#PLEASE UNCOMMENT TO SEE RESULTS ON TERMINAL FOR BYTE ENCRYPTION
+
 # Generating the repeated key
 # repeated_key = b_keygen(key, ascii_text)
 # print("The repeated key is: " + repeated_key)
@@ -125,11 +129,3 @@ ascii_text = file_read("testFiles/test1.txt")
 # decrypted_text = b_decrypt(key, encrypted_text)
 # print("The decypted message is: " + decrypted_text)
 
-#Function to be used for html upload
-# def vsum():
-#   result = []
-#   enc_0 = encrypt(key, ascii_text)
-#   rep_1 = keygen(key, ascii_text)
-#   dec_2 = decrypt(key, cipher_text)
-
-#   result.append()

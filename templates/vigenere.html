@@ -57,17 +57,57 @@
 <p>
  <h1>Your file encryption is: 
    <br>
-   {{value}}
+   {{value[3]}}
  </h1>
 
  <h1>Your file decryption is: 
   <br>
-  {{value}}
+  {{value[4]}}
 </h1>
-<!-- <h1>Your repeated key is: 
+<br>
+<br>
+<p>
+  Let us look at the steps that the cipher does:
+</p>
+<h3>Step 1:</h3>
+<p> The first thing done is the key being repeated until the length of the original text.</p>
+<br>
+<p> The original text is {{value[0]}}. And the original key is {{value[1]}}.</p>
+<p>If we repeat the key until the length of the original text:</p>
+<h1>Your repeated key is: 
   <br>
   {{value[2]}}
-</h1> -->
+</h1>
+<br>
+<h3>Step 2:</h3>
+<p> The next step, is the actual shifting.</p>
+<br>
+<p> Each element of the key is "added" or "positively shifted" to the respective element of the original text.
+  And hence the encryption is the result of that shift. 
+</p>
+<h1>Your file encryption is: 
+  <br>
+  {{value[3]}}
+</h1>
+<br>
+<h3>Step 3:</h3>
+<p> Coming on to the reverse part, the elements of the repeated key are now "subtracted" or "negatively shifted"
+  from the encrypted text. And hence the 
+</p>
+<br>
+<p> Each element of the key is "added" or "positively shifted" to the respective element of the original text.
+  And hence the decryption is the result of that shift. 
+</p>
+<h1>Your file decryption is: 
+  <br>
+  {{value[4]}}
+</h1>
+<br>
+<h3> More on Vigenere </h3>
+<p> Vigenere Cipher is essentially for alphabetical encryption. But this code also enables ASCII encryption using the same
+  shifting algorithm. Usually a 24 by 24 table is used for the original purpose:
+</p>
+<img src="/static/images/vigenere_table.PNG" width="300" height="200">
 </body>
 </html>
 
