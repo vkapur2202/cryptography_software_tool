@@ -250,7 +250,7 @@ def rsaForIntegrityAndAuthentication(steps, file):
     # create_file(file, aliceMessageDecryptedForIntegrityAndAuthentication, "aliceMessageDecryptedForIntegrityAndAuthentication")
     print("Alice's Message Decrypted for Integrity and Authentication: ", aliceMessageDecryptedForIntegrityAndAuthentication)
 
-def rsaForConfidentialityIntegrityAndAuthentication(steps, file):
+def rsaForConfidentialityIntegrityAndAuthentication(steps, aliceMessage):
     alicePublicKey, alicePrivateKey = generatePublicAndPrivateKey(steps)
     print("Alice's Public Key: ")
     print(alicePublicKey[0])
@@ -263,23 +263,23 @@ def rsaForConfidentialityIntegrityAndAuthentication(steps, file):
     print(bobPublicKey[1])
     print("Bob's Private Key: ")
     print(bobPrivateKey)
-    aliceMessage = file_to_bits(file)
+    # aliceMessage = file_to_bits(file)
     # aliceMessage = [87, 72, 66, 73, 83, 88, 66, 73, 0]
     print("Alice's Message: ", aliceMessage)
     aliceMessageEncryptedForIntegrityAndAuthentication = encipherMessageForIntegrityAndAuthentication(aliceMessage, alicePrivateKey, alicePublicKey[1])
-    f = create_file(file, aliceMessageEncryptedForIntegrityAndAuthentication, "aliceMessageEncryptedForIntegrityAndAuthentication")
+    # f = create_file(file, aliceMessageEncryptedForIntegrityAndAuthentication, "aliceMessageEncryptedForIntegrityAndAuthentication")
     steps["aliceMessageEncryptedForIntegrityAndAuthentication"] = aliceMessageEncryptedForIntegrityAndAuthentication
     print("Alice's Message Encrypted for Integrity and Authentication: ", aliceMessageEncryptedForIntegrityAndAuthentication)
     aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication = encipherMessageForConfidentiality(aliceMessageEncryptedForIntegrityAndAuthentication, bobPublicKey)
-    f = create_file(file, aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication, "aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication")
+    # f = create_file(file, aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication, "aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication")
     steps["aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication"] = aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication
     print("Alice's Message Encrypted for Confidentiality, Integrity, and Authentication: ", aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication)
     aliceMessageDecryptedForConfidentiality = decipherMessageForConfidentiality(aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication, bobPrivateKey, bobPublicKey[1])
-    f = create_file(file, aliceMessageDecryptedForConfidentiality, "aliceMessageDecryptedForConfidentiality")
+    # f = create_file(file, aliceMessageDecryptedForConfidentiality, "aliceMessageDecryptedForConfidentiality")
     steps["aliceMessageDecryptedForConfidentiality"] = aliceMessageDecryptedForConfidentiality
     print("Alice's Message Decrypted for Confidentiality: ", aliceMessageDecryptedForConfidentiality)
     aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication = decipherMessageForIntegrityAndAuthentication(aliceMessageDecryptedForConfidentiality, alicePublicKey)
-    f = create_file(file, aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication, "aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication")
+    # f = create_file(file, aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication, "aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication")
     steps["aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication"] = aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication
     print("Alice's Message Decrypted for Confidentiality, Integrity, and Authentication: ", aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication)
 
@@ -288,8 +288,31 @@ def rsa(file):
     # print()
     # rsaForIntegrityAndAuthentication(steps, file)
     # print()
-    steps = {}
-    rsaForConfidentialityIntegrityAndAuthentication(steps, file)
+    aliceMessage = file_to_bits(file)
+    done = False
+    while(not done):
+        steps = {}
+        print("file", file)
+        rsaForConfidentialityIntegrityAndAuthentication(steps, aliceMessage)
+        aliceLength = len(steps['aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication'])
+        if(aliceLength > 0):
+            count = 0
+            for char in steps['aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication']:
+                print(char)
+                if (char > 255):
+                    print("char too long")
+                    print(char)
+                    break
+                count += 1
+            print("count", count)
+            print("aliceLength", aliceLength)
+            print(done)
+            if(count == aliceLength):
+                done = True
+    # f = create_file(file, steps['aliceMessageEncryptedForIntegrityAndAuthentication'], "aliceMessageEncryptedForIntegrityAndAuthentication")
+    # f = create_file(file, steps['aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication'], "aliceMessageEncryptedForIntegrityAndAuthentication")
+    # f = create_file(file, steps['aliceMessageDecryptedForConfidentiality'], "aliceMessageEncryptedForIntegrityAndAuthentication")
+    # f = create_file(file, steps['aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication'], "aliceMessageEncryptedForIntegrityAndAuthentication")
     return steps["Alice p"], steps["Alice q"], steps["Bob p"], steps["Bob q"], steps["Alice n"], steps["Alice phiN"], steps["Bob n"], steps["Bob phiN"], steps["Alice d"], steps["Bob d"], steps['aliceMessageEncryptedForIntegrityAndAuthentication'], steps['aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication'], steps['aliceMessageDecryptedForConfidentiality'], steps['aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication']
 
 # r = rsa(file)
