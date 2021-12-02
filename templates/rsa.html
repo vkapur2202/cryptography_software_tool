@@ -62,7 +62,7 @@ Your public key consists of two numbers: n & e. We'll start by calculating n. n 
 </p>
 
 <p>
-To find a value for p we generate a random number that is 8 bits long (the longer the more secure, in practice 1024-2048 is usually used. I'm using 8 for speed). We then make sure that this number doesn't have any of the first 100 primes as factors.
+To find a value for p we generate a random number that is 32 bits long (the longer the more secure, in practice 1024-2048 is usually used. I'm using 32 for speed). We then make sure that this number doesn't have any of the first 100 primes as factors.
 Finally, we run the Miller-Rabin test on this number 20 times. If a number passes the Miller-Rabin test once it has at least a 75% chance of being a prime.
 If it passes it twice it's 1-(0.25^2) chance. Since we're running it 20 times it's at least a 1-(0.25^20) chance that this number is prime. We use this
 method as it would be too computationally intensive to find a number that we 100% know is prime. The same method is used to find q.
