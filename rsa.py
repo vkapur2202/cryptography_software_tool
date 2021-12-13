@@ -1,72 +1,37 @@
 # rsa
 # Jeffrey Kozik
 
-import random
-import os
-from os.path import exists
+num_bytes_in_block = 1
+prime_bit = 64
 
-file = "testFiles/test1.txt"
+import random # to generate random n-bit numbers and find large prime numbers
+import time
 
+start = time.time()
+
+# bit array of file
 def file_to_bits(file_path):
-    L = []
-    bit_array = file_path.read()
-    for bit in bit_array:
-        L.append(bit)
-        print("bit", bit)
-    # L = []
-    # file = open(file_path, "rb")
-    # byte = file.read(1)
-    # int_val = int.from_bytes(byte, "big")
-    # # print(int_val)
-    # L.append(int_val)
-    # while byte:
-    #     print(byte)
-    #     byte = file.read(1)
-    #     int_val = int.from_bytes(byte, "big")
-    #     print(int_val)
-    #     L.append(int_val)
-    # file.close()
-
-    return L
-
-def create_file(file, int_array, new_name):
-    L = []
-    for int in int_array:
-        print("Int", int)
-        num = 1
-        while True:
-            try:
-                this_byte = int.to_bytes(num, "big")
-                break
-            except:
-                num += 1
-        print("this_byte", this_byte)
-        L.append(this_byte)
-    # directory_name = os.path.dirname(file)
-    # print("d name!!!", directory_name)
-    file_name = ""
-    extension = ""
-    append_file_name = True
-    for char in file:
-        if(append_file_name):
-            if (char != "."):
-                file_name += char
-            else:
-                append_file_name = False
+    L = ""
+    return_array = []
+    byte_array = file_path.read()
+    for byte in byte_array:
+        L += (bin(byte)[2:]).zfill(8)
+        print("byte", byte)
+    print(L)
+    current_position = 0
+    while current_position < len(L):
+        if (current_position + 8*(num_bytes_in_block)) >= (len(L) - 1):
+            return_array.append(int(L[current_position:], 2))
         else:
-            extension += char
-    this_files_name = file_name + "_" + new_name + "." + extension
-    if(exists(this_files_name)):
-        os.remove(this_files_name)
-    f = open(this_files_name, 'x')
-    f.close()
-    f = open(this_files_name, 'wb')
-    for byte in L:
-        f.write(byte)
-    f.close()
-    return f
+            return_array.append(int(L[current_position:(current_position + 8*num_bytes_in_block)], 2))
+        current_position += num_bytes_in_block*8
+    for block in return_array:
+        print("block", block)
+    return return_array
 
+# because regular pow function in python is inaccurate with large numbers
 def mypow(base, exponent, mod):
+    # pow(base, exponent, mod)
     res = 1
     base = base % mod
 
@@ -81,6 +46,7 @@ def mypow(base, exponent, mod):
         base = (base*base) % mod
     return res
 
+# generate many n bit numbers until you find one that is (probably) prime
 def randomNBitNumber(n):
     return (random.randrange(((2**(n-1)) + 1), ((2**n) - 1)))
 
@@ -95,6 +61,7 @@ first100Primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
                     419, 421, 431, 433, 439, 443, 449, 457, 461, 463,
                     467, 479, 487, 491, 499, 503, 509, 521, 523, 541]
 
+# naive check to filter out numbers that are obviously not prime
 def getNumberNotDivisibleByFirst100Primes(n):
     while True:
         randomNumber = randomNBitNumber(n)
@@ -106,6 +73,8 @@ def getNumberNotDivisibleByFirst100Primes(n):
         if (isComposite):
             return randomNumber
 
+# might not actually be prime if it passes this test (only 75% chance it is)
+# When run 20 times 1 - (0.75^20) chance it is
 def passedMillerRabin(potentialPrime):
     evenComponent = potentialPrime - 1
     r = 0
@@ -129,15 +98,19 @@ def passedMillerRabin(potentialPrime):
             return False
     return True
 
+# for computing p & q
 def chooseLargePrime(n):
     while True:
         potentialPrime = getNumberNotDivisibleByFirst100Primes(n)
         if(passedMillerRabin(potentialPrime)):
             return potentialPrime
 
+# 65537 is always relatively prime to phi(n) when n is large enough
 def chooseE(n, phiN):
     return 65537
+    # return 3
 
+# ed mod phi(n) = 1
 def computeD(e, phiN):
     a = 0
     b = phiN
@@ -157,13 +130,13 @@ def computeD(e, phiN):
         return a % phiN
 
 def generatePublicAndPrivateKey(steps):
-    p = chooseLargePrime(32)
+    p = chooseLargePrime(prime_bit) # 1024-2048 bit prime numbers used in industry
     if (not "Alice p" in steps):
         steps["Alice p"] = p
     else:
         steps["Bob p"] = p
     # print("p", p)
-    q = chooseLargePrime(32)
+    q = chooseLargePrime(prime_bit)
     if (not "Alice q" in steps):
         steps["Alice q"] = q
     else:
@@ -196,18 +169,6 @@ def generatePublicAndPrivateKey(steps):
     privateKey = d
     return publicKey, privateKey
 
-def encipherMessageForConfidentiality(m, publicKey):
-    c = []
-    for block in m:
-        c.append(mypow(block, publicKey[0], publicKey[1]))
-    return c
-
-def decipherMessageForConfidentiality(c, d, n):
-    m = []
-    for block in c:
-        m.append(mypow(block, d, n))
-    return m
-
 def encipherMessageForIntegrityAndAuthentication(m, d, n):
     c = []
     for block in m:
@@ -220,35 +181,62 @@ def decipherMessageForIntegrityAndAuthentication(c, publicKey):
         m.append(mypow(block, publicKey[0], publicKey[1]))
     return m
 
-def rsaForConfidentiality(steps, file):
-    alicePublicKey, alicePrivateKey = generatePublicAndPrivateKey(steps)
-    print("Alice's Public Key: ")
-    print(alicePublicKey[0])
-    print(alicePublicKey[1])
-    bobMessage = file_to_bits(file)
-    print("Bob's Message: ", bobMessage)
-    bobMessageEncryptedForConfidentiality = encipherMessageForConfidentiality(bobMessage, alicePublicKey)
-    # create_file(file, bobMessageEncryptedForConfidentiality, "bobMessageEncryptedForConfidentiality")
-    print("Bob's Message Encrypted for Confidentiality: ", bobMessageEncryptedForConfidentiality)
-    bobMessageDecryptedForConfidentiality = decipherMessageForConfidentiality(bobMessageEncryptedForConfidentiality, alicePrivateKey, alicePublicKey[1])
-    # create_file(file, bobMessageDecryptedForConfidentiality, "bobMessageDecryptedForConfidentiality")
-    print("Bob's Message Decrypted for Confidentiality: ", bobMessageDecryptedForConfidentiality)
+# def encipherMessageForConfidentiality(m, publicKey):
+#     c = []
+#     for big_block in m:
+#         # turn block into binary, break block into smaller int blocks, encrypt blocks
+#         binary_big_block = bin(big_block)[2:]
+#         print("binary_big_block", binary_big_block)
+#         mini_block_array = []
+#         current_position = 0
+#         while current_position < len(binary_big_block):
+#             if (current_position + 8*(num_bytes_in_block)) >= (len(binary_big_block) - 1):
+#                 print("binary_big_block[" , current_position , ":]", binary_big_block[current_position:])
+#                 mini_block_array.append(int(binary_big_block[current_position:], 2))
+#             else:
+#                 print("binary_big_block[", current_position, ":" , str(current_position + 8*num_bytes_in_block) , "]", binary_big_block[current_position:(current_position + 8*num_bytes_in_block)])
+#                 mini_block_array.append(int(binary_big_block[current_position:(current_position + 8*num_bytes_in_block)], 2))
+#             current_position += num_bytes_in_block*8
+#         print(mini_block_array)
+#         mini_block_cs = []
+#         for mini_block in mini_block_array:
+#             mini_block_cs.append(mypow(mini_block, publicKey[0], publicKey[1]))
+#         c.append(mini_block_cs)
+#     return c
 
-def rsaForIntegrityAndAuthentication(steps, file):
-    alicePublicKey, alicePrivateKey = generatePublicAndPrivateKey(steps)
-    print("Alice's Public Key: ")
-    print(alicePublicKey[0])
-    print(alicePublicKey[1])
-    print("Alice's Private Key: ")
-    print(alicePrivateKey)
-    aliceMessage = file_to_bits(file)
-    print("Alice's Message: ", aliceMessage)
-    aliceMessageEncryptedForIntegrityAndAuthentication = encipherMessageForIntegrityAndAuthentication(aliceMessage, alicePrivateKey, alicePublicKey[1])
-    # create_file(file, aliceMessageEncryptedForIntegrityAndAuthentication, "aliceMessageEncryptedForIntegrityAndAuthentication")
-    print("Alice's Message Encrypted for Integrity and Authentication: ", aliceMessageEncryptedForIntegrityAndAuthentication)
-    aliceMessageDecryptedForIntegrityAndAuthentication = decipherMessageForIntegrityAndAuthentication(aliceMessageEncryptedForIntegrityAndAuthentication, alicePublicKey)
-    # create_file(file, aliceMessageDecryptedForIntegrityAndAuthentication, "aliceMessageDecryptedForIntegrityAndAuthentication")
-    print("Alice's Message Decrypted for Integrity and Authentication: ", aliceMessageDecryptedForIntegrityAndAuthentication)
+# def decipherMessageForConfidentiality(c, d, n, num_zeros):
+#     m = []
+#     for big_array_block in c:
+#         # decrypt blocks, combine smaller int blocks into larger binary, turn binary into int
+#         mini_block_ms = []
+#         for cs in big_array_block:
+#             mini_block_ms.append(mypow(cs, d, n))
+#         print("mini_block_ms", mini_block_ms)
+#         m_binary_string = ""
+#         count = 0
+#         while count < len(mini_block_ms):
+#             if (count == (len(mini_block_ms) - 1)):
+#                 print("bin(mini_block_ms[", count, "])[2:]", bin(mini_block_ms[count])[2:])
+#                 m_binary_string += (bin(mini_block_ms[count])[2:])
+#             else:
+#                 print("(bin(mini_block_ms[", count, "])[2:]).zfill(", 8*num_bytes_in_block, ")", bin(mini_block_ms[count])[2:].zfill(8*num_bytes_in_block))
+#                 m_binary_string += (bin(mini_block_ms[count])[2:]).zfill(8*num_bytes_in_block)
+#             count += 1
+#         int_m = int(m_binary_string, 2)
+#         m.append(int_m)
+#     return m
+
+def encipherMessageForConfidentiality(m, publicKey):
+    c = []
+    for block in m:
+        c.append(mypow(block, publicKey[0], publicKey[1]))
+    return c
+
+def decipherMessageForConfidentiality(c, d, n):
+    m = []
+    for block in c:
+        m.append(mypow(block, d, n))
+    return m
 
 def rsaForConfidentialityIntegrityAndAuthentication(steps, aliceMessage):
     alicePublicKey, alicePrivateKey = generatePublicAndPrivateKey(steps)
@@ -263,33 +251,25 @@ def rsaForConfidentialityIntegrityAndAuthentication(steps, aliceMessage):
     print(bobPublicKey[1])
     print("Bob's Private Key: ")
     print(bobPrivateKey)
-    # aliceMessage = file_to_bits(file)
-    # aliceMessage = [87, 72, 66, 73, 83, 88, 66, 73, 0]
     print("Alice's Message: ", aliceMessage)
     aliceMessageEncryptedForIntegrityAndAuthentication = encipherMessageForIntegrityAndAuthentication(aliceMessage, alicePrivateKey, alicePublicKey[1])
-    # f = create_file(file, aliceMessageEncryptedForIntegrityAndAuthentication, "aliceMessageEncryptedForIntegrityAndAuthentication")
     steps["aliceMessageEncryptedForIntegrityAndAuthentication"] = aliceMessageEncryptedForIntegrityAndAuthentication
     print("Alice's Message Encrypted for Integrity and Authentication: ", aliceMessageEncryptedForIntegrityAndAuthentication)
     aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication = encipherMessageForConfidentiality(aliceMessageEncryptedForIntegrityAndAuthentication, bobPublicKey)
-    # f = create_file(file, aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication, "aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication")
     steps["aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication"] = aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication
     print("Alice's Message Encrypted for Confidentiality, Integrity, and Authentication: ", aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication)
     aliceMessageDecryptedForConfidentiality = decipherMessageForConfidentiality(aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication, bobPrivateKey, bobPublicKey[1])
-    # f = create_file(file, aliceMessageDecryptedForConfidentiality, "aliceMessageDecryptedForConfidentiality")
     steps["aliceMessageDecryptedForConfidentiality"] = aliceMessageDecryptedForConfidentiality
     print("Alice's Message Decrypted for Confidentiality: ", aliceMessageDecryptedForConfidentiality)
     aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication = decipherMessageForIntegrityAndAuthentication(aliceMessageDecryptedForConfidentiality, alicePublicKey)
-    # f = create_file(file, aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication, "aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication")
     steps["aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication"] = aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication
     print("Alice's Message Decrypted for Confidentiality, Integrity, and Authentication: ", aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication)
 
 def rsa(file):
-    # rsaForConfidentiality(steps, file)
-    # print()
-    # rsaForIntegrityAndAuthentication(steps, file)
-    # print()
     aliceMessage = file_to_bits(file)
     done = False
+    # basically what's happening here is that sometimes it doesn't work because Bn > An so when it's encrypting for confidentiality it doesn't work
+    # so it keeps running until it works. I tried to solve this problem by breaking the intermediate encryption into smaller blocks but that didn't work
     while(not done):
         steps = {}
         print("file", file)
@@ -309,11 +289,6 @@ def rsa(file):
             print(done)
             if(count == aliceLength):
                 done = True
-    # f = create_file(file, steps['aliceMessageEncryptedForIntegrityAndAuthentication'], "aliceMessageEncryptedForIntegrityAndAuthentication")
-    # f = create_file(file, steps['aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication'], "aliceMessageEncryptedForIntegrityAndAuthentication")
-    # f = create_file(file, steps['aliceMessageDecryptedForConfidentiality'], "aliceMessageEncryptedForIntegrityAndAuthentication")
-    # f = create_file(file, steps['aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication'], "aliceMessageEncryptedForIntegrityAndAuthentication")
+    end = time.time()
+    print("time elapsed", end - start)
     return steps["Alice p"], steps["Alice q"], steps["Bob p"], steps["Bob q"], steps["Alice n"], steps["Alice phiN"], steps["Bob n"], steps["Bob phiN"], steps["Alice d"], steps["Bob d"], steps['aliceMessageEncryptedForIntegrityAndAuthentication'], steps['aliceMessageEncryptedForConfidentialityIntegrityAndAuthentication'], steps['aliceMessageDecryptedForConfidentiality'], steps['aliceMessageDecryptedForConfidentialityIntegrityAndAuthentication']
-
-# r = rsa(file)
-# print(r)
