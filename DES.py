@@ -1,7 +1,11 @@
+import time
 from typing import List
 from bitarray import bitarray
 from bitarray.util import ba2int
 import codecs
+import os
+import psutil
+
 
 IP = [[58, 50, 42, 34, 26, 18, 10, 2],
       [60, 52, 44, 36, 28, 20, 12, 4],
@@ -110,7 +114,10 @@ def des_msg(input1, input2):
     result.append(' '.join((bit_key.to01())[i:i + 8] for i in range(0, len(bit_key), 8)))
     bit_msg = bitarray()
     bit_msg.frombytes(msg)
-    zeros_to_pad = 64 - (len(bit_msg) % 64)
+    if len(bit_msg) % 64 == 0:
+        zeros_to_pad = 0
+    else:
+        zeros_to_pad = 64 - (len(bit_msg) % 64)
     bit_msg += bitarray('0')*zeros_to_pad
 
     k_plus, keys = generate_keys(bit_key)
@@ -118,7 +125,7 @@ def des_msg(input1, input2):
     for k in range(len(keys)):
         result.append(' '.join((keys[k].to01())[i:i + 8] for i in range(0, len(keys[k]), 8)))
 
-    result.append(msg.decode("utf-8"))
+    result.append(' ') #msg.decode("utf-8"))
     result.append(' '.join((bit_msg.to01())[i:i + 64] for i in range(0, len(bit_msg), 64)))
 
     isEncrypt = True
@@ -211,3 +218,17 @@ def encrypt(input_binary_file: bitarray, keys, is_encryption: bool):
         output += apply_transformation(R[16] + L[16], IP_Inv)
 
     return m, messageIP, fs, L, R, output
+
+# if __name__ == '__main__':
+#     file_path = '/Users/aishwarya/cryptography_software_tool/testFiles/test2.mp4'
+#     key_path = '/Users/aishwarya/cryptography_software_tool/testFiles/des_key.txt'
+#     file = open(file_path, 'rb').read()
+#     key = open(key_path, 'rb').read()
+#     start_time = time.time()
+#     d = des_msg(file, key)
+#     time_taken = time.time() - start_time
+#     print(time_taken)
+#
+#     process = psutil.Process(os.getpid())
+#     print(process.memory_info().rss)  # in bytes
+

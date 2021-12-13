@@ -77,8 +77,6 @@ ascii_text = file_read("testFiles/test1.txt")
 # print("The decypted message is: " + decrypted_text)
 
 
-#All readable ascii encryption using vigenere cypher in bytes to improve efficiency
-
 # Helper functions
 
 # Byte conversion
@@ -88,44 +86,4 @@ def to_byte(str) :
 
   return b_str
 
-# Key genereation
-# Vigenere key is taken as input and repeated till the length of the English text but in bytes
-def b_keygen(key, ascii_text):
-  b_v_key = key*(len(ascii_text)//len(key)) + key[:len(ascii_text)%len(key)]
-
-  return b_v_key
-
-# Encryption
-# Takes repeated key and shifts the ascii text given to encrypt
-def b_encrypt(key, ascii_text):
-  cipher_text = bytes(a^r for a,r in zip(to_byte(ascii_text), b_keygen(to_byte(key), to_byte(ascii_text))))
-
-  return cipher_text.decode('ascii')
-
-# Decryption
-# Takes repeated key and bak shifts the cipher text given to edecrypt
-def b_decrypt(key, cipher_text):
-  original_text = bytes(a^r for a,r in zip(to_byte(cipher_text), b_keygen(to_byte(key), to_byte(cipher_text))))
-
-  return original_text.decode('ascii')
-
-
-# Testing for inputs and encryption/decryption process with bytes method
-
-key = file_read("testFiles/vigenere_key.txt")
-ascii_text = file_read("testFiles/test1.txt")
-
-#PLEASE UNCOMMENT TO SEE RESULTS ON TERMINAL FOR BYTE ENCRYPTION
-
-# Generating the repeated key
-# repeated_key = b_keygen(key, ascii_text)
-# print("The repeated key is: " + repeated_key)
-
-# Encryption of text
-# encrypted_text = b_encrypt(key, ascii_text)
-# print("The encypted message is: " + encrypted_text)
-
-# Decryption of cipher text
-# decrypted_text = b_decrypt(key, encrypted_text)
-# print("The decypted message is: " + decrypted_text)
 
