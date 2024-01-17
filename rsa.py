@@ -1,6 +1,8 @@
 # rsa
 # Jeffrey Kozik
 
+import secrets
+
 num_bytes_in_block = 1
 prime_bit = 64
 
@@ -93,7 +95,7 @@ def passedMillerRabin(potentialPrime):
 
     numberOfTrials = 20
     for i in range(numberOfTrials):
-        a = random.randrange(2, potentialPrime)
+        a = secrets.SystemRandom().randrange(2, potentialPrime)
         if isComposite(a):
             return False
     return True
