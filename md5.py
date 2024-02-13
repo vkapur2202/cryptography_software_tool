@@ -61,8 +61,7 @@ def md5sum(msg):
             M.append(int.from_bytes(block[j * 4 : (j+1) * 4], byteorder="little"))
 
         for j in range(64):
-            quarter = j // 16
-            if quarter == 0:
+            if (quarter := j // 16) == 0:
                 F = B & C | ~B & D
                 g = j
             elif quarter == 1:

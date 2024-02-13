@@ -33,9 +33,8 @@ def file_to_bits(file_path):
 def mypow(base, exponent, mod):
     # pow(base, exponent, mod)
     res = 1
-    base = base % mod
 
-    if (base == 0):
+    if ((base := base % mod) == 0):
         return 0
 
     while (exponent > 0):
